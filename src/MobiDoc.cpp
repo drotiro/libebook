@@ -120,6 +120,7 @@ struct MobiHeader {
 
 STATIC_ASSERT(kMobiHeaderLen == sizeof(MobiHeader), validMobiHeader);
 
+// http://wiki.mobileread.com/wiki/MOBI#EXTH_Header
 struct ExthHeader {
     char	id[4];
     uint32	hdrLen;   // including 4 id bytes
@@ -670,6 +671,9 @@ bool MobiDoc::ParseHeader()
 		    coverOffset = (uint32) rec->data;
 		    SwapU32(coverOffset);
 		    coverImage = coverOffset;
+		    break;
+		case 503: //if present, it's a better choice for title
+		    title = (char*) &rec->data;
 		    break;
 		default:    
 		    break;
