@@ -110,7 +110,11 @@ struct MobiHeader {
     uint32       drmEntriesCount; // -1 if no drm
     uint32       drmSize;
     uint32       drmFlags;
-    char         reserved2[62];
+    //char         reserved2[62];
+    char	reserved[12];
+    uint16	firstContentRecord;
+    uint16	lastContentRecord;
+    char	reserved2[46]; // [reserved...reserved2] should be 62 bytes
     // A set of binary flags, some of which indicate extra data at the end of each text block.
     // This only seems to be valid for Mobipocket format version 5 and 6 (and higher?), when
     // the header length is 228 (0xE4) or 232 (0xE8).
@@ -609,6 +613,8 @@ bool MobiDoc::ParseHeader()
     SwapU32(mobiHdr->huffmanTableOffset);
     SwapU32(mobiHdr->huffmanTableLen);
     SwapU32(mobiHdr->exhtFlags);
+    SwapU16(mobiHdr->firstContentRecord);
+    SwapU16(mobiHdr->lastContentRecord);
     
     title.append( (char*)(firstRecData+mobiHdr->fullNameOffset), mobiHdr->fullNameLen );
 
@@ -620,7 +626,8 @@ bool MobiDoc::ParseHeader()
             // I don't think this should ever happen but I've seen it
             imagesCount = 0;
         } else
-            imagesCount = pdbHeader.numRecords - mobiHdr->imageFirstRec;
+            //imagesCount = pdbHeader.numRecords - mobiHdr->imageFirstRec;
+	    imagesCount = mobiHdr->lastContentRecord - mobiHdr->imageFirstRec +1;
     }
     size_t hdrLen = mobiHdr->hdrLen;
     if (hdrLen > recLeft) {

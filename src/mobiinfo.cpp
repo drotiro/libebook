@@ -25,8 +25,9 @@ int main(int argc, char** argv) {
 
 	std::cout << "Title:\t\t" << m->GetTitle() << std::endl;
 	std::cout << "Author:\t\t" << m->GetAuthor() << std::endl;
-	std::cout << "Publisher:\t\t" << m->GetPublisher() << std::endl;
+	std::cout << "Publisher:\t" << m->GetPublisher() << std::endl;
 	std::cout << "Length:\t\t" << m->GetBookHtmlSize() << std::endl;
+	std::cout << "Images:\t\t" << m->imagesCount << std::endl;
 
 	delete m;
 	return 0;
