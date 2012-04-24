@@ -1,6 +1,6 @@
 # mobitools
 
-A C++ class, `MobiDoc`, and some tool to deal with .mobi files.
+A C++ class, `MobiDoc`, and some tool to deal with .mobi ebooks.
 
 MobiDoc is based on the omonimous class in [SumatraPDF](http://blog.kowalczyk.info/software/sumatrapdf/free-pdf-reader.html "SumatraPDF")'s code.
 

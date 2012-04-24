@@ -1,5 +1,12 @@
-/* Copyright 2006-2012 the SumatraPDF project authors (see AUTHORS file).
-   License: Simplified BSD (see COPYING.BSD) */
+/* 
+ * Original copyright:
+ *   SumatraPDF project authors
+ *   License: Simplified BSD (see COPYING.BSD) 
+ * 
+ * Modified by:
+ *   Domenico Rotiroti
+ *   License: GPL3 (see COPYING)
+ */
 
 #ifndef BaseUtil_h
 #define BaseUtil_h
@@ -20,8 +27,6 @@
 #define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #define new DEBUG_NEW
 #endif
-
-//#include <tchar.h>
 
 /* Few most common includes for C stdlib */
 #include <assert.h>
@@ -86,21 +91,6 @@ STATIC_ASSERT(4 == sizeof(uint32),  uint32_is_4_bytes);
 STATIC_ASSERT(8 == sizeof(int64),   int64_is_8_bytes);
 STATIC_ASSERT(8 == sizeof(uint64),  uint64_is_8_bytes);
 
-template <typename T>
-inline void swap(T& one, T&two)
-{
-    T tmp = one; one = two; two = tmp;
-}
-
-template <typename T>
-inline T limitValue(T val, T min, T max)
-{
-    assert(max >= min);
-    if (val < min) return min;
-    if (val > max) return max;
-    return val;
-}
-
 inline void *memdup(void *data, size_t len)
 {
     void *dup = malloc(len);
@@ -109,10 +99,4 @@ inline void *memdup(void *data, size_t len)
     return dup;
 }
 #define _memdup(ptr) memdup(ptr, sizeof(*(ptr)))
-
-inline bool memeq(const void *s1, const void *s2, size_t len)
-{
-    return 0 == memcmp(s1, s2, len);
-}
-
 #endif
