@@ -120,13 +120,13 @@ public:
 
     bool                LoadDocument();
     
-    std::string         GetBookHtmlData() { return doc; }
-    size_t              GetBookHtmlSize() const { return doc.length(); }
+    std::string&	GetBookHtmlData() { return doc; }
+    size_t		GetBookHtmlSize() const { return doc.length(); }
     std::string		GetTitle() { return title; }
     std::string		GetAuthor() { return author; }
     std::string		GetPublisher() { return publisher; }
-    ImageData *         GetCoverImage();
-    ImageData *         GetImage(size_t imgRecIndex) const;
+    ImageData *		GetCoverImage();
+    ImageData *		GetImage(size_t imgRecIndex) const;
     char *		GetFileName() const { return fileName; }
 
     static MobiDoc *    CreateFromFile(const char *fileName);

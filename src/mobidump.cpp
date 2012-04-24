@@ -33,9 +33,10 @@ int main(int argc, char** argv) {
 	// Get text
 	char name[BUF_SIZE];
 	FILE * text;
+	string book = m->GetBookHtmlData();
 	sprintf(name, "%s%stext.html", argv[2], SEP);
 	text = fopen(name, "wb");
-	fprintf(text,"%s", m->GetBookHtmlData().c_str());
+	fprintf(text,"%s", book.c_str());
 	fclose(text);
 	
 	// Get images

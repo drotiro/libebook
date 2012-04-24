@@ -17,7 +17,6 @@
 #include <iostream>
 #include <string.h>
 
-
 // Parse mobi format http://wiki.mobileread.com/wiki/MOBI
 
 #define err(msg) std::cerr << "[ERROR] " << msg << std::endl;
