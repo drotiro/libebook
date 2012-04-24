@@ -48,13 +48,20 @@
 /* compile-time assert */
 #define STATIC_ASSERT(exp, name) typedef int assert_##name [(exp) != false]
 
+typedef unsigned char uint8;
+typedef int16_t   int16;
+typedef uint16_t uint16;
+typedef int32_t   int32;
+typedef uint32_t uint32;
+typedef int64_t   int64;
+typedef uint64_t uint64;
+
 // for converting between big-/little-endian values and host endianness
 // (the same macros could also be used for conversion in the opposite direction)
 // TODO: swap definitions should we ever compile for big-endian architectures
-/* this are from mingw's windef.h  & co.*/
-typedef unsigned char BYTE;
-typedef unsigned short WORD;
-typedef unsigned long DWORD;
+typedef uint8 BYTE;
+typedef uint16 WORD;
+typedef uint32 DWORD;
 typedef long LONG;
 #define CP_UTF8 65001
 #define MAKEWORD(a,b)	((WORD)(((BYTE)(a))|(((WORD)((BYTE)(b)))<<8)))
@@ -68,14 +75,6 @@ typedef long LONG;
 #define BEtoHl(x) MAKELONG(BEtoHs(HIWORD(x)), BEtoHs(LOWORD(x)))
 #define LEtoHs(x) (x)
 #define LEtoHl(x) (x)
-
-typedef unsigned char uint8;
-typedef int16_t   int16;
-typedef uint16_t uint16;
-typedef int32_t   int32;
-typedef uint32_t uint32;
-typedef int64_t   int64;
-typedef uint64_t uint64;
 
 // useful for setting an 'invalid' state for size_t variables
 #define MAX_SIZE_T (size_t)(-1)
