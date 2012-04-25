@@ -1,4 +1,4 @@
-OPTS=-g
+OPTS=-g -fpermissive
 LOPTS=$(OPTS)
 OBJS=src/BitReader.o src/MobiDoc.o src/MobiHtmlHelper.o
 TOOL_OBJS=src/mobidump.o src/mobiinfo.o
