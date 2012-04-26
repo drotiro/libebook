@@ -11,8 +11,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <algorithm>
-#include <stdlib.h>
 #include <string>
+#include <stdlib.h>
 
 using std::string;
 using std::vector;
@@ -21,17 +21,18 @@ using std::vector;
 
 #ifdef _WIN32
  #define SEP "\\"
+ #define PATHLEN MAX_PATH
 #else
  #define SEP "/"
+ #define PATHLEN PATH_MAX
 #endif
-
 
 MobiDumper::~MobiDumper() {
 }
 
 void MobiDumper::write(const char * name, string content) {
     FILE * f;
-    char fname[MAX_PATH];
+    char fname[PATHLEN];
     sprintf(fname, "%s%s%s", outDir, SEP, name);
     f = fopen(fname, "wb");
     fprintf(f,"%s", content.c_str());
@@ -40,7 +41,7 @@ void MobiDumper::write(const char * name, string content) {
 
 void MobiDumper::write(const char * name, char * content, size_t len) {
     FILE * f;
-    char fname[MAX_PATH];
+    char fname[PATHLEN];
     sprintf(fname, "%s%s%s", outDir, SEP, name);
     f = fopen(fname, "wb");
     fwrite(content, 1, len, f);

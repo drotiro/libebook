@@ -1,7 +1,5 @@
 /* 
- * MobiDumper 
- * Utilities for content extraction and
- * markup "normalization" of mobi files
+ * MobiHtmlHelper - transforms mobi markup in standard HTML
  * 
  * Author:  Domenico Rotiroti
  * License: GPL3 (see COPYING)
