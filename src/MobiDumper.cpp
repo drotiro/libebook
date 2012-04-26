@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <algorithm>
 #include <string>
-#include <stdlib.h>
 
 using std::string;
 using std::vector;
@@ -20,9 +19,11 @@ using std::vector;
 #define FPOSLEN 10
 
 #ifdef _WIN32
+ #include <stdlib.h>
  #define SEP "\\"
  #define PATHLEN MAX_PATH
 #else
+ #include <limits.h>
  #define SEP "/"
  #define PATHLEN PATH_MAX
 #endif
@@ -135,7 +136,7 @@ void MobiDumper::dumpImages() {
 
 void MobiDumper::scanImages() {
 	ImageData * id;
-	char fname[MAX_PATH];
+	char fname[PATHLEN];
 	
 	for(int i = 1; i <= srcdoc->imagesCount; ++i) {
 	    id = srcdoc->GetImage(i);
