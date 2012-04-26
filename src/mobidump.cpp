@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
 	h.dumpImages();
 	h.dumpText();
 	h.dumpMetadata();
-	
+
 	delete m;
 	return 0;
     }

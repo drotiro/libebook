@@ -1,5 +1,7 @@
 /* 
- * MobiHtmlHelper - transforms mobi markup in standard HTML
+ * MobiDumper 
+ * Utilities for content extraction and
+ * markup "normalization" of mobi files
  * 
  * Author:  Domenico Rotiroti
  * License: GPL3 (see COPYING)
@@ -33,6 +35,15 @@ void MobiDumper::write(const char * name, string content) {
     sprintf(fname, "%s%s%s", outDir, SEP, name);
     f = fopen(fname, "wb");
     fprintf(f,"%s", content.c_str());
+    fclose(f);
+}
+
+void MobiDumper::write(const char * name, char * content, size_t len) {
+    FILE * f;
+    char fname[MAX_PATH];
+    sprintf(fname, "%s%s%s", outDir, SEP, name);
+    f = fopen(fname, "wb");
+    fwrite(content, 1, len, f);
     fclose(f);
 }
 
@@ -112,16 +123,24 @@ void MobiDumper::dumpText() {
 
 void MobiDumper::dumpImages() {
 	ImageData * id;
-	FILE * img;
+	
+	for(int i = 1; i <= srcdoc->imagesCount; ++i) {
+	    id = srcdoc->GetImage(i);
+	    if(id==NULL) break;
+	    
+	    write(imgNames[i-1].c_str(), id->data, id->len);
+	}
+}
+
+void MobiDumper::scanImages() {
+	ImageData * id;
 	char fname[MAX_PATH];
 	
 	for(int i = 1; i <= srcdoc->imagesCount; ++i) {
 	    id = srcdoc->GetImage(i);
 	    if(id==NULL) break;
-	    sprintf(fname, "%s%simg_%03d%s", outDir, SEP, i, id->type);
+	    sprintf(fname, "img_%03d%s", i, id->type);
 	    imgNames.push_back(string(fname));
-	    img = fopen(fname, "wb");
-	    fwrite(id->data, 1, id->len, img);
-	    fclose(img);
 	}
+
 }

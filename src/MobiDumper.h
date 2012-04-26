@@ -1,5 +1,7 @@
 /* 
- * MobiHtmlHelper - transforms mobi markup in standard HTML
+ * MobiDumper 
+ * Utilities for content extraction and
+ * markup "normalization" of mobi files
  * 
  * Author:  Domenico Rotiroti
  * License: GPL3 (see COPYING)
@@ -15,7 +17,9 @@
 class MobiDumper {
 public:
     MobiDumper(MobiDoc * book, char * op) 
-	: srcdoc(book), outDir(op) {}
+	: srcdoc(book), outDir(op) {
+	    scanImages();
+	}
 
     void dumpImages();
     void dumpText();
@@ -30,6 +34,8 @@ private:
     void jsonAdd(std::string &, std::string, std::string);
     std::string fixLinks();
     void write(const char * name, std::string content);
+    void write(const char * name, char* content, size_t len);
+    void scanImages();
 };
 
 #endif	/* MOBIHTMLHELPER_H */
