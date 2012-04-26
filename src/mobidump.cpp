@@ -6,7 +6,7 @@
  */
 
 #include "MobiDoc.h"
-#include "MobiHelper.h"
+#include "MobiDumper.h"
 #include <iostream>
 #include <vector>
 

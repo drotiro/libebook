@@ -5,7 +5,7 @@
  * License: GPL3 (see COPYING)
  */
 
-#include "MobiHelper.h"
+#include "MobiDumper.h"
 #include <iostream>
 #include <stdio.h>
 #include <algorithm>
