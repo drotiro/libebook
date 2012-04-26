@@ -12,20 +12,24 @@
 #include <vector>
 #include "MobiDoc.h"
 
-class MobiHelper {
+class MobiDumper {
 public:
-    MobiHelper(MobiDoc * book, std::vector<std::string> in, char * op) 
-	: srcdoc(book), imgNames(in), outDir(op) {}
-    
-    std::string fixLinks();
-    std::string getJsonInfo();
+    MobiDumper(MobiDoc * book, char * op) 
+	: srcdoc(book), outDir(op) {}
 
-    virtual ~MobiHelper();
+    void dumpImages();
+    void dumpText();
+    void dumpMetadata();
+
+    virtual ~MobiDumper();
 private:
     MobiDoc *	srcdoc;
     char *	outDir;
     std::vector<std::string> imgNames;
+
     void jsonAdd(std::string &, std::string, std::string);
+    std::string fixLinks();
+    void write(const char * name, std::string content);
 };
 
 #endif	/* MOBIHTMLHELPER_H */

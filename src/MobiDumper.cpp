@@ -10,20 +10,37 @@
 #include <stdio.h>
 #include <algorithm>
 #include <stdlib.h>
+#include <string>
 
 using std::string;
 using std::vector;
 
 #define FPOSLEN 10
 
-MobiHelper::~MobiHelper() {
+#ifdef _WIN32
+ #define SEP "\\"
+#else
+ #define SEP "/"
+#endif
+
+
+MobiDumper::~MobiDumper() {
 }
 
-void MobiHelper::jsonAdd(string & js, string key, string val) {
+void MobiDumper::write(const char * name, string content) {
+    FILE * f;
+    char fname[MAX_PATH];
+    sprintf(fname, "%s%s%s", outDir, SEP, name);
+    f = fopen(fname, "wb");
+    fprintf(f,"%s", content.c_str());
+    fclose(f);
+}
+
+void MobiDumper::jsonAdd(string & js, string key, string val) {
     js.append("\"").append(key).append("\":\"").append(val).append("\",");
 }
 
-string MobiHelper::getJsonInfo() {
+void MobiDumper::dumpMetadata() {
     string js = "{";
     jsonAdd(js, "author", srcdoc->GetAuthor());
     jsonAdd(js, "publisher", srcdoc->GetPublisher());
@@ -33,10 +50,11 @@ string MobiHelper::getJsonInfo() {
     jsonAdd(js, "content-path", outDir);
     //TODO: RES
     js.append("}");
-    return js;
+    
+    write("info.json", js);
 }
 
-string MobiHelper::fixLinks() {
+string MobiDumper::fixLinks() {
     string src = srcdoc->GetBookHtmlData();
     char fbuf[24];
 
@@ -85,4 +103,25 @@ string MobiHelper::fixLinks() {
     }
 
     return src;
+}
+
+void MobiDumper::dumpText() {
+    string text = fixLinks();
+    write("text.html", text);
+}
+
+void MobiDumper::dumpImages() {
+	ImageData * id;
+	FILE * img;
+	char fname[MAX_PATH];
+	
+	for(int i = 1; i <= srcdoc->imagesCount; ++i) {
+	    id = srcdoc->GetImage(i);
+	    if(id==NULL) break;
+	    sprintf(fname, "%s%simg_%03d%s", outDir, SEP, i, id->type);
+	    imgNames.push_back(string(fname));
+	    img = fopen(fname, "wb");
+	    fwrite(id->data, 1, id->len, img);
+	    fclose(img);
+	}
 }
