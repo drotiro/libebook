@@ -6,7 +6,7 @@
  */
 
 #include "MobiDoc.h"
-#include "MobiHtmlHelper.h"
+#include "MobiHelper.h"
 #include <iostream>
 #include <vector>
 
@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
 	for(int i = 1; i <= m->imagesCount; ++i) {
 	    id = m->GetImage(i);
 	    if(id==NULL) break;
-	    sprintf(name, "%s%simg_%02d%s", argv[2], SEP, i, id->type);
+	    sprintf(name, "%s%simg_%03d%s", argv[2], SEP, i, id->type);
 	    imgNames.push_back(string(name));
 	    img = fopen(name, "wb");
 	    fwrite(id->data, 1, id->len, img);
@@ -57,8 +57,8 @@ int main(int argc, char** argv) {
 	}
 	
 	// Fix HTML
-	MobiHtmlHelper h = MobiHtmlHelper(book);
-	string book2 = h.fixLinks(imgNames);
+	MobiHelper h = MobiHelper(m, imgNames, argv[2]);
+	string book2 = h.fixLinks();
 	sprintf(name, "%s%stext_fixed.html", argv[2], SEP);
 	text = fopen(name, "wb");
 	fprintf(text,"%s", book2.c_str());
@@ -70,6 +70,12 @@ int main(int argc, char** argv) {
 	fwrite(id->data, 1, id->len, img);
 	fclose(img);
 
+	string ji = h.getJsonInfo();
+	sprintf(name, "%s%sinfo.json", argv[2], SEP);
+	text = fopen(name, "wb");
+	fprintf(text,"%s", ji.c_str());
+	fclose(text);
+	
 	delete m;
 	return 0;
     }

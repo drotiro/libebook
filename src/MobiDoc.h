@@ -126,6 +126,7 @@ public:
     std::string		GetAuthor() { return author; }
     std::string		GetPublisher() { return publisher; }
     ImageData *		GetCoverImage();
+    size_t		GetCoverImageIndex() { return coverImage; }
     ImageData *		GetImage(size_t imgRecIndex) const;
     char *		GetFileName() const { return fileName; }
 

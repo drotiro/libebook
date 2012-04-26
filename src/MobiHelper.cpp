@@ -5,7 +5,7 @@
  * License: GPL3 (see COPYING)
  */
 
-#include "MobiHtmlHelper.h"
+#include "MobiHelper.h"
 #include <iostream>
 #include <stdio.h>
 #include <algorithm>
@@ -16,10 +16,28 @@ using std::vector;
 
 #define FPOSLEN 10
 
-MobiHtmlHelper::~MobiHtmlHelper() {
+MobiHelper::~MobiHelper() {
 }
 
-std::string MobiHtmlHelper::fixLinks(vector<string> imgNames) {
+void MobiHelper::jsonAdd(string & js, string key, string val) {
+    js.append("\"").append(key).append("\":\"").append(val).append("\",");
+}
+
+string MobiHelper::getJsonInfo() {
+    string js = "{";
+    jsonAdd(js, "author", srcdoc->GetAuthor());
+    jsonAdd(js, "publisher", srcdoc->GetPublisher());
+    jsonAdd(js, "title", srcdoc->GetTitle());
+    jsonAdd(js, "cover", imgNames[srcdoc->GetCoverImageIndex()]);
+    //TODO: TOC
+    jsonAdd(js, "content-path", outDir);
+    //TODO: RES
+    js.append("}");
+    return js;
+}
+
+string MobiHelper::fixLinks() {
+    string src = srcdoc->GetBookHtmlData();
     char fbuf[24];
 
     // Step 1. fix a[@href]
