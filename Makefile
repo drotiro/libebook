@@ -1,6 +1,6 @@
 OPTS=-g -fpermissive
 LOPTS=$(OPTS)
-OBJS=src/BitReader.o src/MobiDoc.o src/MobiDumper.o
+OBJS=src/BitReader.o src/MobiDoc.o src/MobiDumper.o src/Locale.o
 TOOL_OBJS=src/mobidump.o src/mobiinfo.o
 
 .PHONY: all
