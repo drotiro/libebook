@@ -615,6 +615,7 @@ bool MobiDoc::ParseHeader()
     SwapU16(mobiHdr->firstContentRecord);
     SwapU16(mobiHdr->lastContentRecord);
     
+    locale = mobiHdr->locale;
     title.append( (char*)(firstRecData+mobiHdr->fullNameOffset), mobiHdr->fullNameLen );
 
     textEncoding = mobiHdr->textEncoding;
@@ -953,6 +954,10 @@ bool MobiDoc::LoadDocRecordIntoBuffer(size_t recNo, std::string& strOut)
 
     assert(0);
     return false;
+}
+
+unsigned int	MobiDoc::GetLocale() {
+    return locale;
 }
 
 // assumes that ParseHeader() has been called

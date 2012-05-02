@@ -15,7 +15,7 @@
 class Locale {
 	private:
 		static Locale * theInstance;
-		std::map<int, std::string> l;
+		std::map<unsigned int, std::string> l;
 		Locale();
 	
 	public:

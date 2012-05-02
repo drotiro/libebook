@@ -91,6 +91,7 @@ class MobiDoc
     size_t              trailersCount;
     size_t              imageFirstRec; // 0 if no images
     size_t		coverImage;
+    unsigned int	locale;
 
     // we use bufStatic if record fits in it, bufDynamic otherwise
     char                bufStatic[kMaxRecordSize];
@@ -125,6 +126,7 @@ public:
     std::string		GetTitle() { return title; }
     std::string		GetAuthor() { return author; }
     std::string		GetPublisher() { return publisher; }
+    unsigned int	GetLocale();
     ImageData *		GetCoverImage();
     size_t		GetCoverImageIndex() { return coverImage; }
     ImageData *		GetImage(size_t imgRecIndex) const;
