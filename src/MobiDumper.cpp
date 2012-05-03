@@ -30,10 +30,11 @@ using std::vector;
 
 string replaceAll(string & src, string what, string with) {
     string::size_type pos = src.find(what),
-	len = what.length();
+	len = what.length(),
+	rlen = with.length();
     while(pos!=string::npos) {
 	src.replace(pos, len, with);
-	pos = src.find(what, pos+1);
+	pos = src.find(what, pos+rlen);
     }
     return src;
 }
