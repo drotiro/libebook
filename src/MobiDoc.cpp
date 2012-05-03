@@ -497,7 +497,7 @@ MobiDoc::~MobiDoc()
     //delete doc;
 }
 
-bool MobiDoc::ParseHeader()
+bool MobiDoc::parseHeader()
 {
     DWORD bytesRead;
     bytesRead = fread((void*)&pdbHeader, 1, kPdbHeaderLen, fileHandle);
@@ -548,7 +548,7 @@ bool MobiDoc::ParseHeader()
     }
 
     size_t recLeft;
-    char *buf = ReadRecord(0, recLeft);
+    char *buf = readRecord(0, recLeft);
     if (NULL == buf) {
         err("failed to read record");
         return false;
@@ -694,7 +694,7 @@ bool MobiDoc::ParseHeader()
     if (palmDocHdr->compressionType == COMPRESSION_HUFF) {
         assert(isMobi);
         size_t recSize;
-        char *recData = ReadRecord(mobiHdr->huffmanFirstRec, recSize);
+        char *recData = readRecord(mobiHdr->huffmanFirstRec, recSize);
         if (!recData)
             return false;
         size_t cdicsCount = mobiHdr->huffmanRecCount - 1;
@@ -706,7 +706,7 @@ bool MobiDoc::ParseHeader()
         if (!huffDic->SetHuffData((uint8*)recData, recSize))
             return false;
         for (size_t i = 0; i < cdicsCount; i++) {
-            recData = ReadRecord(mobiHdr->huffmanFirstRec + 1 + i, recSize);
+            recData = readRecord(mobiHdr->huffmanFirstRec + 1 + i, recSize);
             if (!recData)
                 return false;
             if (!huffDic->AddCdicData((uint8*)recData, recSize))
@@ -714,7 +714,7 @@ bool MobiDoc::ParseHeader()
         }
     }
 
-    LoadImages();
+    loadImages();
     return true;
 }
 
@@ -772,12 +772,12 @@ static char * ImageType(uint8 *data, size_t dataLen)
 
 // return false if we should stop loading images (because we
 // encountered eof record or ran out of memory)
-bool MobiDoc::LoadImage(size_t imageNo)
+bool MobiDoc::loadImage(size_t imageNo)
 {
     size_t imageRec = imageFirstRec + imageNo;
     size_t imgDataLen;
 
-    uint8 *imgData = (uint8*)ReadRecord(imageRec, imgDataLen);
+    uint8 *imgData = (uint8*)readRecord(imageRec, imgDataLen);
     if (!imgData || (0 == imgDataLen))
         return true;
     if (IsEofRecord(imgData, imgDataLen))
@@ -793,13 +793,13 @@ bool MobiDoc::LoadImage(size_t imageNo)
     return true;
 }
 
-void MobiDoc::LoadImages()
+void MobiDoc::loadImages()
 {
     if (0 == imagesCount)
         return;
     images = SAZA(ImageData, imagesCount);
     for (size_t i = 0; i < imagesCount; i++) {
-        if (!LoadImage(i))
+        if (!loadImage(i))
             return;
     }
 }
@@ -808,7 +808,7 @@ void MobiDoc::LoadImages()
 // as far as I can tell, this means: it starts at 1 
 // returns NULL if there is no image (e.g. it's not a format we
 // recognize)
-ImageData *MobiDoc::GetImage(size_t imgRecIndex) const
+ImageData *MobiDoc::getImage(size_t imgRecIndex) const
 {
     if ((imgRecIndex > imagesCount) || (imgRecIndex < 1))
         return NULL;
@@ -820,7 +820,7 @@ ImageData *MobiDoc::GetImage(size_t imgRecIndex) const
 
 // first two images seem to be the same picture of the cover
 // except at different resolutions
-ImageData *MobiDoc::GetCoverImage()
+ImageData *MobiDoc::getCover()
 {
     if(coverImage >= 0) {
 	return &images[coverImage];
@@ -844,14 +844,14 @@ ImageData *MobiDoc::GetCoverImage()
     return &images[coverImg];
 }
 
-size_t MobiDoc::GetRecordSize(size_t recNo)
+size_t MobiDoc::getRecordSize(size_t recNo)
 {
     size_t size = recHeaders[recNo + 1].offset - recHeaders[recNo].offset;
     return size;
 }
 
 // returns NULL if error (failed to allocated)
-char *MobiDoc::GetBufForRecordData(size_t size)
+char *MobiDoc::getBufForRecordData(size_t size)
 {
     if (size <= sizeof(bufStatic))
         return bufStatic;
@@ -864,12 +864,12 @@ char *MobiDoc::GetBufForRecordData(size_t size)
 }
 
 // read a record and return it's data and size. Return NULL if error
-char* MobiDoc::ReadRecord(size_t recNo, size_t& sizeOut)
+char* MobiDoc::readRecord(size_t recNo, size_t& sizeOut)
 {
     size_t off = recHeaders[recNo].offset;
-    DWORD toRead = GetRecordSize(recNo);
+    DWORD toRead = getRecordSize(recNo);
     sizeOut = toRead;
-    char *buf = GetBufForRecordData(toRead);
+    char *buf = getBufForRecordData(toRead);
     if (NULL == buf)
         return NULL;
     DWORD bytesRead;
@@ -914,10 +914,10 @@ static size_t ExtraDataSize(uint8 *recData, size_t recLen, size_t trailersCount,
 
 // Load a given record of a document into strOut, uncompressing if necessary.
 // Returns false if error.
-bool MobiDoc::LoadDocRecordIntoBuffer(size_t recNo, std::string& strOut)
+bool MobiDoc::loadDocRecordIntoBuffer(size_t recNo, std::string& strOut)
 {
     size_t recSize;
-    char *recData = ReadRecord(recNo, recSize);
+    char *recData = readRecord(recNo, recSize);
     if (NULL == recData)
         return false;
     size_t extraSize = ExtraDataSize((uint8*)recData, recSize, trailersCount, multibyte);
@@ -956,18 +956,18 @@ bool MobiDoc::LoadDocRecordIntoBuffer(size_t recNo, std::string& strOut)
     return false;
 }
 
-unsigned int	MobiDoc::GetLocale() {
+unsigned int	MobiDoc::getLocale() {
     return locale;
 }
 
 // assumes that ParseHeader() has been called
-bool MobiDoc::LoadDocument()
+bool MobiDoc::loadDocument()
 {
     assert(docUncompressedSize > 0);
 
     //doc = new str::Str<char>(docUncompressedSize);
     for (size_t i = 1; i <= docRecCount; i++) {
-        if (!LoadDocRecordIntoBuffer(i, doc))
+        if (!loadDocRecordIntoBuffer(i, doc))
             return false;
     }
     assert(docUncompressedSize == doc.length());
@@ -982,7 +982,7 @@ bool MobiDoc::LoadDocument()
     return true;
 }
 
-MobiDoc *MobiDoc::CreateFromFile(const char *fileName)
+MobiDoc *MobiDoc::createFromFile(const char *fileName)
 {
     FILE * fh = fopen(fileName, "rb");
     if (fh == NULL)
@@ -991,8 +991,8 @@ MobiDoc *MobiDoc::CreateFromFile(const char *fileName)
     mb->fileName = strdup(fileName);
     mb->fileHandle = fh;
 
-    if (mb->ParseHeader()) {
-	if (mb->LoadDocument()) 
+    if (mb->parseHeader()) {
+	if (mb->loadDocument()) 
 		return mb;
     }
 

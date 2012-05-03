@@ -55,10 +55,10 @@ void MobiDumper::jsonAdd(string & js, string key, string val) {
 
 void MobiDumper::dumpMetadata() {
     string js = "{";
-    jsonAdd(js, "author", srcdoc->GetAuthor());
-    jsonAdd(js, "publisher", srcdoc->GetPublisher());
-    jsonAdd(js, "title", srcdoc->GetTitle());
-    jsonAdd(js, "cover", imgNames[srcdoc->GetCoverImageIndex()]);
+    jsonAdd(js, "author", srcdoc->getAuthor());
+    jsonAdd(js, "publisher", srcdoc->getPublisher());
+    jsonAdd(js, "title", srcdoc->getTitle());
+    jsonAdd(js, "cover", imgNames[srcdoc->getCoverIndex()]);
     //TODO: TOC
     jsonAdd(js, "content-path", outDir);
     //TODO: RES
@@ -68,7 +68,7 @@ void MobiDumper::dumpMetadata() {
 }
 
 string MobiDumper::fixLinks() {
-    string src = srcdoc->GetBookHtmlData();
+    string src = srcdoc->getText();
     char fbuf[24];
 
     // Step 1. fix a[@href]
@@ -127,7 +127,7 @@ void MobiDumper::dumpImages() {
 	ImageData * id;
 	
 	for(int i = 1; i <= srcdoc->imagesCount; ++i) {
-	    id = srcdoc->GetImage(i);
+	    id = srcdoc->getImage(i);
 	    if(id==NULL) break;
 	    
 	    write(imgNames[i-1].c_str(), id->data, id->len);
@@ -139,7 +139,7 @@ void MobiDumper::scanImages() {
 	char fname[PATHLEN];
 	
 	for(int i = 1; i <= srcdoc->imagesCount; ++i) {
-	    id = srcdoc->GetImage(i);
+	    id = srcdoc->getImage(i);
 	    if(id==NULL) break;
 	    sprintf(fname, "img_%03d%s", i, id->type);
 	    imgNames.push_back(string(fname));

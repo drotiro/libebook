@@ -18,7 +18,7 @@ using std::vector;
  */
 int main(int argc, char** argv) {
     if(argc == 3) {
-	MobiDoc * m = MobiDoc::CreateFromFile(argv[1]);
+	MobiDoc * m = MobiDoc::createFromFile(argv[1]);
 	if(m==NULL) {
 	    cerr << "Unable to open file " << argv[1] << std::endl;
 	    return 1;

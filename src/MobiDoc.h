@@ -105,13 +105,14 @@ class MobiDoc
 
     MobiDoc();
 
-    bool    ParseHeader();
-    char *  GetBufForRecordData(size_t size);
-    size_t  GetRecordSize(size_t recNo);
-    char*   ReadRecord(size_t recNo, size_t& sizeOut);
-    bool    LoadDocRecordIntoBuffer(size_t recNo, std::string& strOut);
-    void    LoadImages();
-    bool    LoadImage(size_t imageNo);
+    bool	parseHeader();
+    bool	loadDocument();
+    char *	getBufForRecordData(size_t size);
+    size_t	getRecordSize(size_t recNo);
+    char*	readRecord(size_t recNo, size_t& sizeOut);
+    bool	loadDocRecordIntoBuffer(size_t recNo, std::string& strOut);
+    void	loadImages();
+    bool	loadImage(size_t imageNo);
 
 public:
 
@@ -119,20 +120,18 @@ public:
 
     ~MobiDoc();
 
-    bool                LoadDocument();
-    
-    std::string&	GetBookHtmlData() { return doc; }
-    size_t		GetBookHtmlSize() const { return doc.length(); }
-    std::string		GetTitle() { return title; }
-    std::string		GetAuthor() { return author; }
-    std::string		GetPublisher() { return publisher; }
-    unsigned int	GetLocale();
-    ImageData *		GetCoverImage();
-    size_t		GetCoverImageIndex() { return coverImage; }
-    ImageData *		GetImage(size_t imgRecIndex) const;
-    char *		GetFileName() const { return fileName; }
+    std::string&	getText() { return doc; }
+    size_t		getTextSize() const { return doc.length(); }
+    std::string		getTitle() { return title; }
+    std::string		getAuthor() { return author; }
+    std::string		getPublisher() { return publisher; }
+    unsigned int	getLocale();
+    ImageData *		getCover();
+    size_t		getCoverIndex() { return coverImage; }
+    ImageData *		getImage(size_t imgRecIndex) const;
+    char *		getFileName() const { return fileName; }
 
-    static MobiDoc *    CreateFromFile(const char *fileName);
+    static MobiDoc *    createFromFile(const char *fileName);
 };
 
 #endif
