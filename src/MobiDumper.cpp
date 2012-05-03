@@ -74,7 +74,8 @@ void MobiDumper::dumpMetadata() {
     //TODO: TOC
     jsonAdd(js, "content-path", outDir);
     //TODO: RES
-    js.append("}");
+    //remove last comma before closing
+    js.replace(js.length()-1, 1, "}");
     
     write("info.json", js);
 }
