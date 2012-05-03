@@ -8,8 +8,8 @@
  *   License: GPL3 (see COPYING)
  */
 
-#ifndef BaseUtil_h
-#define BaseUtil_h
+#ifndef Utils_h
+#define Utils_h
 
 #if defined(_UNICODE) && !defined(UNICODE)
 #define UNICODE
@@ -46,9 +46,6 @@
    SAZA = Struct Allocate and Zero memory for Array
    (note: use operator new for single structs/classes) */
 #define SAZA(struct_name, n) (struct_name *)calloc((n), sizeof(struct_name))
-
-#define dimof(X)    (sizeof(X)/sizeof((X)[0]))
-#define NoOp()      ((void)0)
 
 /* compile-time assert */
 #define STATIC_ASSERT(exp, name) typedef int assert_##name [(exp) != false]

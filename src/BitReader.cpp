@@ -2,7 +2,7 @@
    License: Simplified BSD (see COPYING.BSD) */
 
 #include "BitReader.h"
-#include "BaseUtil.h"
+#include "Utils.h"
 
 // Bit reader is a streaming reader of bits from underlying memory data
 

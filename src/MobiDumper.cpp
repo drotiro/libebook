@@ -28,6 +28,16 @@ using std::vector;
  #define PATHLEN PATH_MAX
 #endif
 
+string replaceAll(string & src, string what, string with) {
+    string::size_type pos = src.find(what),
+	len = what.length();
+    while(pos!=string::npos) {
+	src.replace(pos, len, with);
+	pos = src.find(what, pos+1);
+    }
+    return src;
+}
+
 MobiDumper::~MobiDumper() {
 }
 
@@ -50,7 +60,8 @@ void MobiDumper::write(const char * name, char * content, size_t len) {
 }
 
 void MobiDumper::jsonAdd(string & js, string key, string val) {
-    js.append("\"").append(key).append("\":\"").append(val).append("\",");
+    js.append("\"").append(key).append("\":\"");
+    js.append(replaceAll(val, "/", "\\/")).append("\",");
 }
 
 void MobiDumper::dumpMetadata() {
@@ -95,11 +106,7 @@ string MobiDumper::fixLinks() {
     }
     
     // replace filepos with href
-    pos = src.find(fmark);
-    while(pos!=string::npos) {
-	src.replace(pos, fmark.length(), "href=#");
-	pos = src.find(fmark, pos+1);
-    }
+    replaceAll(src, fmark, "href=#");
 
     // Step 2. fix img[@src]
     for(int i = 0; i < imgNames.size(); ++i) {
@@ -108,11 +115,7 @@ string MobiDumper::fixLinks() {
 	string r1 = "src=\"";
 	r1.append(imgNames[i]);
 	r1.append("\"");
-	pos = src.find(f1);
-	while(pos!=string::npos) {
-	    src.replace(pos, f1.length(), r1);
-	    pos = src.find(f1);
-	}
+	replaceAll(src, f1, r1);
     }
 
     return src;

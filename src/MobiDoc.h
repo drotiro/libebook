@@ -13,7 +13,7 @@
 #ifndef MobiDoc_h
 #define MobiDoc_h
 
-#include "BaseUtil.h"
+#include "Utils.h"
 
 #include <string>
 
