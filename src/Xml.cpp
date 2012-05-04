@@ -51,6 +51,6 @@ std::vector<string> Xml::xpath(string expr) {
 }
 
 Xml::~Xml() {
-    xmlFreeDoc(doc);
+    if(doc) xmlFreeDoc(doc);
 }
 
