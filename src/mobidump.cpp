@@ -25,9 +25,7 @@ int main(int argc, char** argv) {
 	}
 
 	MobiDumper h = MobiDumper(m, argv[2]);
-	h.dumpImages();
-	h.dumpText();
-	h.dumpMetadata();
+	h.dump();
 
 	delete m;
 	return 0;

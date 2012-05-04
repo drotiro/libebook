@@ -20,6 +20,13 @@ public:
 	    scanLinks();
 	}
 
+    //Dump everything in outdir
+    void dump() {
+	dumpText();
+	dumpImages();
+	dumpMetadata();
+    }
+    
     void dumpImages();
     void dumpText();
     void dumpMetadata();
