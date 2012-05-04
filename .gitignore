@@ -1,6 +1,5 @@
 mobidump
 mobiinfo
-mobidump.exe
-mobiinfo.exe
 nbproject
+*.exe
 *.o

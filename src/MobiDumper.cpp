@@ -80,35 +80,17 @@ void MobiDumper::dumpMetadata() {
     write("info.json", js);
 }
 
-string MobiDumper::fixLinks() {
-    string src = srcdoc->getText();
+string MobiDumper::fixLinks(string src) {
     char fbuf[24];
 
-    // Step 1. fix a[@href]
-    vector<int> fpos;
-    string fmark = "filepos=";
-    int val;
-    
-    // find all filepos marks (avoiding duplicates)
-    string::size_type pos = src.find(fmark);
-    while(pos!=string::npos) {
-	val = atoi(src.substr(pos+fmark.length(), FPOSLEN).c_str());
-	if( std::find(fpos.begin(), fpos.end(), val) == fpos.end())
-		fpos.push_back(val);
-	pos = src.find(fmark, pos+1);
-    }
-    
-    // sort them in reverse order
-    std::sort(fpos.begin(), fpos.end(), std::greater<int>());
-    
+    // Step 1. fix a[@href]    
     // add anchors    
-    for( vector<int>::iterator ip = fpos.begin(); ip != fpos.end(); ip++) {
+    for( vector<int>::iterator ip = filepos.begin(); ip != filepos.end(); ip++) {
 	sprintf(fbuf, "<a name=\"%010d\"/>", *ip);
 	src.insert(*ip, fbuf);
     }
-    
     // replace filepos with href
-    replaceAll(src, fmark, "href=#");
+    replaceAll(src, "filepos=", "href=#");
 
     // Step 2. fix img[@src]
     for(int i = 0; i < imgNames.size(); ++i) {
@@ -124,7 +106,7 @@ string MobiDumper::fixLinks() {
 }
 
 void MobiDumper::dumpText() {
-    string text = fixLinks();
+    string text = fixLinks(srcdoc->getText());
     write("text.html", text);
 }
 
@@ -149,5 +131,23 @@ void MobiDumper::scanImages() {
 	    sprintf(fname, "img_%03d%s", i, id->type);
 	    imgNames.push_back(string(fname));
 	}
+}
 
+void MobiDumper::scanLinks() {
+    string src = srcdoc->getText();
+    string fmark = "filepos=";
+    size_t fml = fmark.length();
+    int val;
+    
+    // find all filepos marks (avoiding duplicates)
+    string::size_type pos = src.find(fmark);
+    while(pos!=string::npos) {
+	val = atoi(src.substr(pos+fml, FPOSLEN).c_str());
+	if( std::find(filepos.begin(), filepos.end(), val) == filepos.end())
+		filepos.push_back(val);
+	pos = src.find(fmark, pos+fml);
+    }
+    
+    // sort them in reverse order
+    std::sort(filepos.begin(), filepos.end(), std::greater<int>());
 }
