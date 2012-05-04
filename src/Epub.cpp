@@ -18,8 +18,8 @@ Epub *	Epub::createFromFile(const char *fileName) {
     book->zf = new Zip(fileName);
     
     if(!book->check()) {
-	delete book;
-	return NULL;
+        delete book;
+        return NULL;
     }
     
     return book;

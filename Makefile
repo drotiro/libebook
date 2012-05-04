@@ -3,7 +3,7 @@ PREFIX ?= /usr/local
 all:
 	make -C src lib tools
 
-install:
+install: all
 	cp bin/* $(PREFIX)/bin
 	cp lib/* $(PREFIX)/lib
 	

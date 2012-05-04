@@ -5,7 +5,7 @@ OPTS    = -g -fpermissive
 FLAGS = $(shell pkg-config ${PKGS} --cflags) ${OPTS}
 LIBS = $(shell pkg-config ${PKGS} --libs)
 OBJS    = BitReader.o MobiBook.o MobiDumper.o Locale.o Epub.o Zip.o Xml.o
-HEADERS = $(OBJS:.o=.h) Utils.h 
+HEADERS = $(OBJS:.o=.h) Utils.h Ebook.h
 TOBJS   = bookdump.o bookinfo.o
 TOOLS	= ${TOBJS:.o=}
 SONAME  = libebook.so

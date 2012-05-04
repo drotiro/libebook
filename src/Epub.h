@@ -22,8 +22,6 @@ private:
     Epub() {};
     bool check();
     Zip * zf;
-
-
 };
 
 #endif	/* EPUB_H */

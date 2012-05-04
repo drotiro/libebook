@@ -8,6 +8,7 @@
 
 #include "Xml.h"
 #include <libxml/xpath.h>
+#include <libxml/xpathInternals.h>
 
 bool Xml::initDone = Xml::doInit();
 
@@ -22,7 +23,7 @@ Xml::Xml(string xmlstring) {
 }
 
 Xml::Xml(const char * xmlstring) {
-    doc = xmlReadDoc( (const xmlChar*)xmlstring, "somedoc.xml", "UTF-8", 
+    doc = xmlReadDoc( (const xmlChar*)xmlstring, "Xml.xml", "UTF-8", 
 	    XML_PARSE_RECOVER | XML_PARSE_NONET );    
 }
 
