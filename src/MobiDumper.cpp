@@ -84,13 +84,15 @@ string MobiDumper::fixLinks(string src) {
     char fbuf[24];
 
     // Step 1. fix a[@href]    
-    // add anchors    
-    for( vector<int>::iterator ip = filepos.begin(); ip != filepos.end(); ip++) {
-	sprintf(fbuf, "<a name=\"%010d\"/>", *ip);
-	src.insert(*ip, fbuf);
+    string fmark = "filepos=", href="href=text_";
+    size_t fml = fmark.length(), hl = href.length();
+    string::size_type pos = src.find(fmark);
+    while(pos!=string::npos) {
+	src.replace(pos, fml, href);
+	src.insert(pos+hl+FPOSLEN,".html");
+	pos = src.find(fmark, pos+hl+FPOSLEN);
     }
-    // replace filepos with href
-    replaceAll(src, "filepos=", "href=#");
+
 
     // Step 2. fix img[@src]
     for(int i = 0; i < imgNames.size(); ++i) {
@@ -106,8 +108,20 @@ string MobiDumper::fixLinks(string src) {
 }
 
 void MobiDumper::dumpText() {
-    string text = fixLinks(srcdoc->getText());
-    write("text.html", text);
+    char fbuf[24];
+    string text = srcdoc->getText(), 
+	    part;
+
+    for( vector<int>::iterator ip = filepos.begin(); ip != filepos.end(); ip++) {
+	//split at *ip
+	part = fixLinks(text.substr(*ip));
+	text = text.substr(0,*ip);
+	//write part
+	sprintf(fbuf, "text_%010d.html", *ip);
+	write(fbuf, part);
+    }
+    
+    write("text.html", fixLinks(text));
 }
 
 void MobiDumper::dumpImages() {
