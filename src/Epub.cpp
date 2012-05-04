@@ -9,6 +9,8 @@
 #include "Epub.h"
 #include "Xml.h"
 
+#define BREAK_XPATH "xmlns=\"urn:oasis:names:tc:opendocument:xmlns:container\""
+
 using std::string;
 
 Epub *	Epub::createFromFile(const char *fileName) {
@@ -30,6 +32,9 @@ bool Epub::check() {
     
     // read opf path from container
     string container = zf->getFile("META-INF/container.xml");
+    // libxml2's xpath has a problem with this...
+    size_t pos = container.find(BREAK_XPATH);
+    if(pos!=string::npos) container.erase( pos, sizeof(BREAK_XPATH)-1);
     Xml cx(container);
     std::vector<string> xr = cx.xpath("//rootfile/@full-path");
     if(xr.size() == 0 )  return false;
