@@ -1,16 +1,17 @@
-# mobitools
+# libebook
 
-A C++ class, `MobiDoc`, and some tool to deal with .mobi ebooks.
+libebook is a library to read metadata and content from the most common ebook formats (currently: epub and mobi).
 
-MobiDoc is based on the omonimous class in [SumatraPDF](http://blog.kowalczyk.info/software/sumatrapdf/free-pdf-reader.html "SumatraPDF")'s code.
+Mobi support is based on the MobiDoc class in [SumatraPDF](http://blog.kowalczyk.info/software/sumatrapdf/free-pdf-reader.html "SumatraPDF")'s code.
 
 The original files are distributed under a Simplified BSD license, my files are under the GPL3 (see COPYING).
 
-## Usage
+The library comes with two example tools:
 
-    mobidump myfile.mobi outdir
 
-or
+    bookdump <ebook> <outdir>
 
-    mobiinfo myfile.mobi
+and
+
+    mobiinfo <ebook>
 
