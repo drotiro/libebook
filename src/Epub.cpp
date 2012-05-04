@@ -35,11 +35,12 @@ bool Epub::check() {
     if(xr.size() == 0 )  return false;
     
     // parse opf
-    Xml opf(zf->getFile(xr[0]));
-    xr = opf.xpath("/metadata/title");
+    Xml * opf = new Xml(zf->getFile(xr[0]));
+    xr = opf->xpath("/metadata/title");
     if(xr.size()) title = xr[0];
-    xr = opf.xpath("/metadata/creator");
+    xr = opf->xpath("/metadata/creator");
     if(xr.size()) author = xr[0];
+    delete opf;
 
     
     return true;

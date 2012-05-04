@@ -26,7 +26,7 @@ string Zip::getFile(string path) {
     
     char buf[BUFSIZE];
     string res;
-    zip_file * f = zip_fopen_index(archive, pos, 0);
+    zip_file * f = zip_fopen(archive, path.c_str(), 0);
     if(!f) return "";
     int read = zip_fread(f, buf, BUFSIZE);
     while(read>0) {
