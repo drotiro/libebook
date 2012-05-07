@@ -1,5 +1,6 @@
 /* 
- * MobiDoc and related classes
+ * MobiBook and related classes
+ * Based non MobiDoc from SumatraPDF code
  * 
  * Original copyright:
  *   SumatraPDF project authors
@@ -10,7 +11,7 @@
  *   License: GPL3 (see COPYING)
  */
 
-#include "MobiDoc.h"
+#include "MobiBook.h"
 #include "BitReader.h"
 
 #include <time.h>
@@ -473,7 +474,7 @@ static bool IsValidCompression(int comprType)
             (COMPRESSION_HUFF == comprType);
 }
 
-MobiDoc::MobiDoc() :
+MobiBook::MobiBook() :
     fileName(NULL), fileHandle(0), recHeaders(NULL), firstRecData(NULL),
     isMobi(false), docRecCount(0), compressionType(0), docUncompressedSize(0),
     doc(""), multibyte(false), trailersCount(0), imageFirstRec(0),
@@ -482,7 +483,7 @@ MobiDoc::MobiDoc() :
 {
 }
 
-MobiDoc::~MobiDoc()
+MobiBook::~MobiBook()
 {
     fclose(fileHandle);
     free(fileName);
@@ -497,7 +498,7 @@ MobiDoc::~MobiDoc()
     //delete doc;
 }
 
-bool MobiDoc::parseHeader()
+bool MobiBook::parseHeader()
 {
     DWORD bytesRead;
     bytesRead = fread((void*)&pdbHeader, 1, kPdbHeaderLen, fileHandle);
@@ -772,7 +773,7 @@ static char * ImageType(uint8 *data, size_t dataLen)
 
 // return false if we should stop loading images (because we
 // encountered eof record or ran out of memory)
-bool MobiDoc::loadImage(size_t imageNo)
+bool MobiBook::loadImage(size_t imageNo)
 {
     size_t imageRec = imageFirstRec + imageNo;
     size_t imgDataLen;
@@ -793,7 +794,7 @@ bool MobiDoc::loadImage(size_t imageNo)
     return true;
 }
 
-void MobiDoc::loadImages()
+void MobiBook::loadImages()
 {
     if (0 == imagesCount)
         return;
@@ -808,7 +809,7 @@ void MobiDoc::loadImages()
 // as far as I can tell, this means: it starts at 1 
 // returns NULL if there is no image (e.g. it's not a format we
 // recognize)
-ImageData *MobiDoc::getImage(size_t imgRecIndex) const
+ImageData *MobiBook::getImage(size_t imgRecIndex) const
 {
     if ((imgRecIndex > imagesCount) || (imgRecIndex < 1))
         return NULL;
@@ -820,7 +821,7 @@ ImageData *MobiDoc::getImage(size_t imgRecIndex) const
 
 // first two images seem to be the same picture of the cover
 // except at different resolutions
-ImageData *MobiDoc::getCover()
+ImageData *MobiBook::getCover()
 {
     if(coverImage >= 0) {
 	return &images[coverImage];
@@ -844,14 +845,14 @@ ImageData *MobiDoc::getCover()
     return &images[coverImg];
 }
 
-size_t MobiDoc::getRecordSize(size_t recNo)
+size_t MobiBook::getRecordSize(size_t recNo)
 {
     size_t size = recHeaders[recNo + 1].offset - recHeaders[recNo].offset;
     return size;
 }
 
 // returns NULL if error (failed to allocated)
-char *MobiDoc::getBufForRecordData(size_t size)
+char *MobiBook::getBufForRecordData(size_t size)
 {
     if (size <= sizeof(bufStatic))
         return bufStatic;
@@ -864,7 +865,7 @@ char *MobiDoc::getBufForRecordData(size_t size)
 }
 
 // read a record and return it's data and size. Return NULL if error
-char* MobiDoc::readRecord(size_t recNo, size_t& sizeOut)
+char* MobiBook::readRecord(size_t recNo, size_t& sizeOut)
 {
     size_t off = recHeaders[recNo].offset;
     DWORD toRead = getRecordSize(recNo);
@@ -914,7 +915,7 @@ static size_t ExtraDataSize(uint8 *recData, size_t recLen, size_t trailersCount,
 
 // Load a given record of a document into strOut, uncompressing if necessary.
 // Returns false if error.
-bool MobiDoc::loadDocRecordIntoBuffer(size_t recNo, std::string& strOut)
+bool MobiBook::loadDocRecordIntoBuffer(size_t recNo, std::string& strOut)
 {
     size_t recSize;
     char *recData = readRecord(recNo, recSize);
@@ -956,12 +957,12 @@ bool MobiDoc::loadDocRecordIntoBuffer(size_t recNo, std::string& strOut)
     return false;
 }
 
-unsigned int	MobiDoc::getLocale() {
+unsigned int	MobiBook::getLocale() {
     return locale;
 }
 
 // assumes that ParseHeader() has been called
-bool MobiDoc::loadDocument()
+bool MobiBook::loadDocument()
 {
     assert(docUncompressedSize > 0);
 
@@ -982,12 +983,12 @@ bool MobiDoc::loadDocument()
     return true;
 }
 
-MobiDoc *MobiDoc::createFromFile(const char *fileName)
+MobiBook *MobiBook::createFromFile(const char *fileName)
 {
     FILE * fh = fopen(fileName, "rb");
     if (fh == NULL)
         return NULL;
-    MobiDoc *mb = new MobiDoc();
+    MobiBook *mb = new MobiBook();
     mb->fileName = strdup(fileName);
     mb->fileHandle = fh;
 

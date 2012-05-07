@@ -1,5 +1,6 @@
 /* 
- * MobiDoc and related classes
+ * MobiBook and related classes
+ * Based non MobiDoc from SumatraPDF code
  * 
  * Original copyright:
  *   SumatraPDF project authors
@@ -10,8 +11,8 @@
  *   License: GPL3 (see COPYING)
  */
 
-#ifndef MobiDoc_h
-#define MobiDoc_h
+#ifndef MobiBook_h
+#define MobiBook_h
 
 #include "Utils.h"
 #include "Ebook.h"
@@ -73,7 +74,7 @@ struct ImageData {
     char *	type;
 };
 
-class MobiDoc : public Ebook
+class MobiBook : public Ebook
 {
     char *             fileName;
     FILE  *             fileHandle;
@@ -104,7 +105,7 @@ class MobiDoc : public Ebook
 
     HuffDicDecompressor *huffDic;
 
-    MobiDoc();
+    MobiBook();
 
     bool	parseHeader();
     bool	loadDocument();
@@ -119,7 +120,7 @@ public:
 
     size_t		imagesCount;
 
-    ~MobiDoc();
+    ~MobiBook();
 
     std::string&	getText() { return doc; }
     size_t		getTextSize() const { return doc.length(); }
@@ -129,7 +130,7 @@ public:
     ImageData *		getImage(size_t imgRecIndex) const;
     char *		getFileName() const { return fileName; }
 
-    static MobiDoc *    createFromFile(const char *fileName);
+    static MobiBook *    createFromFile(const char *fileName);
 };
 
 #endif

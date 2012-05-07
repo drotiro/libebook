@@ -10,12 +10,12 @@
 
 #include <string>
 #include <vector>
-#include "MobiDoc.h"
+#include "MobiBook.h"
 #include "Dumper.h"
 
 class MobiDumper : public Dumper {
 public:
-    MobiDumper(MobiDoc * book, char * op) : Dumper(op), srcdoc(book) {
+    MobiDumper(MobiBook * book, char * op) : Dumper(op), srcdoc(book) {
 	scanImages();
 	scanLinks();
     }
@@ -26,7 +26,7 @@ public:
 
     virtual ~MobiDumper();
 private:
-    MobiDoc *	srcdoc;
+    MobiBook *	srcdoc;
     std::vector<std::string> imgNames;
     std::vector<int> filepos;
 

@@ -13,12 +13,12 @@
 
 class Ebook {
 public:
-    
+
     virtual ~Ebook() {};
     virtual std::string	getTitle() { return title; }
     virtual std::string	getAuthor() { return author; }
     virtual std::string	getPublisher() { return publisher; }
-    
+
 protected:
     std::string title, author, publisher;
     Ebook() {};

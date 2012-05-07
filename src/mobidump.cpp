@@ -5,7 +5,7 @@
  * License: GPL3 (see COPYING)
  */
 
-#include "MobiDoc.h"
+#include "MobiBook.h"
 #include "MobiDumper.h"
 #include <iostream>
 
@@ -18,7 +18,7 @@ using std::vector;
  */
 int main(int argc, char** argv) {
     if(argc == 3) {
-	MobiDoc * m = MobiDoc::createFromFile(argv[1]);
+	MobiBook * m = MobiBook::createFromFile(argv[1]);
 	if(m==NULL) {
 	    cerr << "Unable to open file " << argv[1] << std::endl;
 	    return 1;
