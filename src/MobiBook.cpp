@@ -475,7 +475,7 @@ static bool IsValidCompression(int comprType)
 }
 
 MobiBook::MobiBook() :
-    fileName(NULL), fileHandle(0), recHeaders(NULL), firstRecData(NULL),
+    recHeaders(NULL), firstRecData(NULL),
     isMobi(false), docRecCount(0), compressionType(0), docUncompressedSize(0),
     doc(""), multibyte(false), trailersCount(0), imageFirstRec(0),
     imagesCount(0), images(NULL), bufDynamic(NULL), bufDynamicSize(0),
@@ -502,8 +502,7 @@ bool MobiBook::parseHeader()
 {
     DWORD bytesRead;
     bytesRead = fread((void*)&pdbHeader, 1, kPdbHeaderLen, fileHandle);
-    //BOOL ok = ReadFile(fileHandle, (void*)&pdbHeader, kPdbHeaderLen, &bytesRead, NULL);
-    if (/*!ok ||*/ (kPdbHeaderLen != bytesRead))
+    if ((kPdbHeaderLen != bytesRead))
         return false;
 
     if (IsMobiPdb(&pdbHeader)) {
@@ -527,10 +526,8 @@ bool MobiBook::parseHeader()
     recHeaders = SAZA(PdbRecordHeader, pdbHeader.numRecords + 1);
     if (!recHeaders)
         return false;
-    //DWORD toRead = kPdbRecordHeaderLen * pdbHeader.numRecords;
-    //ok = ReadFile(fileHandle, (void*)recHeaders, toRead, &bytesRead, NULL);
     bytesRead = fread((void*)recHeaders, kPdbRecordHeaderLen, pdbHeader.numRecords, fileHandle);
-    if (/*!ok ||*/ (pdbHeader.numRecords != bytesRead))
+    if ((pdbHeader.numRecords != bytesRead))
         return false;
 
     for (int i = 0; i < pdbHeader.numRecords; i++) {

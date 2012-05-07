@@ -76,9 +76,6 @@ struct ImageData {
 
 class MobiBook : public Ebook
 {
-    char *             fileName;
-    FILE  *             fileHandle;
-
     PdbHeader           pdbHeader;
     PdbRecordHeader *   recHeaders;
     char *              firstRecData;

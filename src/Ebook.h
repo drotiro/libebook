@@ -20,8 +20,10 @@ public:
     virtual std::string	getPublisher() { return publisher; }
 
 protected:
-    std::string title, author, publisher;
-    Ebook() {};
+    char *	fileName;
+    FILE *	fileHandle;
+    std::string	title, author, publisher;
+    Ebook() : fileName(NULL), fileHandle(0) {};
 
 private:
 };

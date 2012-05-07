@@ -1,16 +1,16 @@
 OPTS=-g -fpermissive
 LOPTS=$(OPTS)
 OBJS=src/BitReader.o src/MobiBook.o src/MobiDumper.o src/Locale.o
-TOOL_OBJS=src/mobidump.o src/mobiinfo.o
+TOOL_OBJS=src/bookdump.o src/bookinfo.o
 
 .PHONY: all
 
 all: $(OBJS) $(TOOL_OBJS)
-	g++ $(LOPTS) -o mobidump $(OBJS) src/mobidump.o
-	g++ $(LOPTS) -o mobiinfo $(OBJS) src/mobiinfo.o
+	g++ $(LOPTS) -o bookdump $(OBJS) src/bookdump.o
+	g++ $(LOPTS) -o bookinfo $(OBJS) src/bookinfo.o
 
 clean:
-	rm -f src/*.o *.exe mobidump mobiinfo
+	rm -f src/*.o *.exe bookinfo bookdump
 
 .cpp.o:
 	g++ $(OPTS) -c $< -o $@
