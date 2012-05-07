@@ -14,6 +14,7 @@
 #define MobiDoc_h
 
 #include "Utils.h"
+#include "Ebook.h"
 
 #include <string>
 
@@ -72,7 +73,7 @@ struct ImageData {
     char *	type;
 };
 
-class MobiDoc
+class MobiDoc : public Ebook
 {
     char *             fileName;
     FILE  *             fileHandle;
@@ -99,7 +100,7 @@ class MobiDoc
     size_t              bufDynamicSize;
 
     ImageData *         images;
-    std::string		doc, title, author, publisher;
+    std::string		doc;
 
     HuffDicDecompressor *huffDic;
 
@@ -122,9 +123,6 @@ public:
 
     std::string&	getText() { return doc; }
     size_t		getTextSize() const { return doc.length(); }
-    std::string		getTitle() { return title; }
-    std::string		getAuthor() { return author; }
-    std::string		getPublisher() { return publisher; }
     unsigned int	getLocale();
     ImageData *		getCover();
     size_t		getCoverIndex() { return coverImage; }

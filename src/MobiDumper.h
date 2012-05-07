@@ -11,22 +11,15 @@
 #include <string>
 #include <vector>
 #include "MobiDoc.h"
+#include "Dumper.h"
 
-class MobiDumper {
+class MobiDumper : public Dumper {
 public:
-    MobiDumper(MobiDoc * book, char * op) 
-	: srcdoc(book), outDir(op) {
-	    scanImages();
-	    scanLinks();
-	}
-
-    //Dump everything in outdir
-    void dump() {
-	dumpText();
-	dumpImages();
-	dumpMetadata();
+    MobiDumper(MobiDoc * book, char * op) : Dumper(op), srcdoc(book) {
+	scanImages();
+	scanLinks();
     }
-    
+
     void dumpImages();
     void dumpText();
     void dumpMetadata();
@@ -34,7 +27,6 @@ public:
     virtual ~MobiDumper();
 private:
     MobiDoc *	srcdoc;
-    char *	outDir;
     std::vector<std::string> imgNames;
     std::vector<int> filepos;
 
