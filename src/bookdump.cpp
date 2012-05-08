@@ -7,6 +7,7 @@
 
 #include "MobiBook.h"
 #include "MobiDumper.h"
+#include "Epub.h"
 #include <iostream>
 #include <string>
 
@@ -26,6 +27,8 @@ int main(int argc, char** argv) {
 
 	if(file.find(".mobi",file.length()-5, 5) != string::npos)
 	    m = (Ebook*) MobiBook::createFromFile(argv[1]);
+	else if(file.find(".epub",file.length()-5, 5) != string::npos)
+	    m = (Ebook*) Epub::createFromFile(argv[1]);
 
 	if(m==NULL) {
 	    cerr << "Unable to open ebook " << file << std::endl;

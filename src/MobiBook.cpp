@@ -496,7 +496,6 @@ MobiBook::~MobiBook()
     }
     free(images);
     delete huffDic;
-    //delete doc;
 }
 
 bool MobiBook::parseHeader()
