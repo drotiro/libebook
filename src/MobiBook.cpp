@@ -13,6 +13,7 @@
 
 #include "MobiBook.h"
 #include "BitReader.h"
+#include "MobiDumper.h"
 
 #include <time.h>
 #include <iostream>
@@ -997,3 +998,7 @@ MobiBook *MobiBook::createFromFile(const char *fileName)
     delete mb;
     return NULL;
 }
+
+Dumper * MobiBook::getDumper(const char * outdir) {
+	return new MobiDumper(this, outdir);
+    }

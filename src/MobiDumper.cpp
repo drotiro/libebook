@@ -67,10 +67,10 @@ void MobiDumper::jsonAdd(string & js, string key, string val) {
 
 void MobiDumper::dumpMetadata() {
     string js = "{";
-    jsonAdd(js, "author", srcdoc->getAuthor());
-    jsonAdd(js, "publisher", srcdoc->getPublisher());
-    jsonAdd(js, "title", srcdoc->getTitle());
-    jsonAdd(js, "cover", imgNames[srcdoc->getCoverIndex()]);
+    jsonAdd(js, "author", book->getAuthor());
+    jsonAdd(js, "publisher", book->getPublisher());
+    jsonAdd(js, "title", book->getTitle());
+    jsonAdd(js, "cover", imgNames[mobi->getCoverIndex()]);
     //remove last comma before closing
     js.replace(js.length()-1, 1, "}");
 
@@ -106,7 +106,7 @@ string MobiDumper::fixLinks(string src) {
 
 void MobiDumper::dumpText() {
     char fbuf[24];
-    string text = srcdoc->getText(), 
+    string text = mobi->getText(), 
 	    part;
 
     for( vector<int>::iterator ip = filepos.begin(); ip != filepos.end(); ip++) {
@@ -124,8 +124,8 @@ void MobiDumper::dumpText() {
 void MobiDumper::dumpImages() {
 	ImageData * id;
 	
-	for(int i = 1; i <= srcdoc->imagesCount; ++i) {
-	    id = srcdoc->getImage(i);
+	for(int i = 1; i <= mobi->imagesCount; ++i) {
+	    id = mobi->getImage(i);
 	    if(id==NULL) break;
 	    
 	    write(imgNames[i-1].c_str(), id->data, id->len);
@@ -136,8 +136,8 @@ void MobiDumper::scanImages() {
 	ImageData * id;
 	char fname[PATHLEN];
 	
-	for(int i = 1; i <= srcdoc->imagesCount; ++i) {
-	    id = srcdoc->getImage(i);
+	for(int i = 1; i <= mobi->imagesCount; ++i) {
+	    id = mobi->getImage(i);
 	    if(id==NULL) break;
 	    sprintf(fname, "img_%03d%s", i, id->type);
 	    imgNames.push_back(string(fname));
@@ -145,18 +145,18 @@ void MobiDumper::scanImages() {
 }
 
 void MobiDumper::scanLinks() {
-    string src = srcdoc->getText();
+    string txt = mobi->getText();
     string fmark = "filepos=";
     size_t fml = fmark.length();
     int val;
     
     // find all filepos marks (avoiding duplicates)
-    string::size_type pos = src.find(fmark);
+    string::size_type pos = txt.find(fmark);
     while(pos!=string::npos) {
-	val = atoi(src.substr(pos+fml, FPOSLEN).c_str());
+	val = atoi(txt.substr(pos+fml, FPOSLEN).c_str());
 	if( std::find(filepos.begin(), filepos.end(), val) == filepos.end())
 		filepos.push_back(val);
-	pos = src.find(fmark, pos+fml);
+	pos = txt.find(fmark, pos+fml);
     }
     
     // sort them in reverse order

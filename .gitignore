@@ -1,5 +1,4 @@
-mobidump
-mobiinfo
+bin
+lib
 nbproject
-*.exe
 *.o

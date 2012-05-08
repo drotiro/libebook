@@ -127,7 +127,8 @@ public:
     ImageData *		getImage(size_t imgRecIndex) const;
     char *		getFileName() const { return fileName; }
 
-    static MobiBook *    createFromFile(const char *fileName);
+    static MobiBook *	createFromFile(const char *fileName);
+    Dumper *		getDumper(const char * outdir);
 };
 
 #endif

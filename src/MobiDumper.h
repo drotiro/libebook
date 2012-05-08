@@ -11,11 +11,11 @@
 #include <string>
 #include <vector>
 #include "MobiBook.h"
-#include "Dumper.h"
 
 class MobiDumper : public Dumper {
 public:
-    MobiDumper(MobiBook * book, char * op) : Dumper(op), srcdoc(book) {
+    MobiDumper(Ebook * book, const char * op) : Dumper(book, op) {
+	mobi = static_cast<MobiBook*>(book);
 	scanImages();
 	scanLinks();
     }
@@ -26,7 +26,7 @@ public:
 
     virtual ~MobiDumper();
 private:
-    MobiBook *	srcdoc;
+    MobiBook * mobi;
     std::vector<std::string> imgNames;
     std::vector<int> filepos;
 
