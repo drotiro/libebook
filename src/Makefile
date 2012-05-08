@@ -12,7 +12,7 @@ SONAME  = libebook.so
 
 # Target
 lib: $(OBJS) $(HEADERS)
-	$(CXX) -shared -Wl,-soname,libebook.so -o ../lib/$(SONAME) $(FLAGS)
+	$(CXX) -shared -Wl,-soname,$(SONAME) -o ../lib/$(SONAME) $(FLAGS)
 	$(AR) r ../lib/$(SONAME:.so=.a) $(OBJS)
 
 tools: $(TOOLS)

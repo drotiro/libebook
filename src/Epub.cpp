@@ -16,6 +16,8 @@ Epub *	Epub::createFromFile(const char *fileName) {
 	delete book;
 	return NULL;
     }
+    
+    return book;
 }
 
 bool Epub::check() {
