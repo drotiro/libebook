@@ -7,6 +7,9 @@
  */
 
 #include "Epub.h"
+#include "Xml.h"
+
+using std::string;
 
 Epub *	Epub::createFromFile(const char *fileName) {
     Epub * book = new Epub();
@@ -24,6 +27,20 @@ bool Epub::check() {
     //this checks both archive validity and mimetype presence
     if(!zf->hasFile("mimetype")) return false;
     if(!zf->hasFile("META-INF/container.xml")) return false;
+    
+    // read opf path from container
+    string container = zf->getFile("META-INF/container.xml");
+    Xml cx(container);
+    std::vector<string> xr = cx.xpath("//rootfile/@full-path");
+    if(xr.size() == 0 )  return false;
+    
+    // parse opf
+    Xml opf(zf->getFile(xr[0]));
+    xr = opf.xpath("/metadata/title");
+    if(xr.size()) title = xr[0];
+    xr = opf.xpath("/metadata/creator");
+    if(xr.size()) author = xr[0];
+
     
     return true;
 }

@@ -10,6 +10,7 @@
 #define	ZIP_H
 
 #include <zip.h>
+#include <string>
 
 class Zip {
 public:
@@ -17,7 +18,7 @@ public:
     
     bool isValid() { return archive!=NULL; }
     bool hasFile(const char * path);
-    
+    std::string getFile(std::string path);
     virtual ~Zip();
 
 private:
