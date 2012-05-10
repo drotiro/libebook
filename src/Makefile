@@ -1,7 +1,7 @@
 # Variables
 
 PKGS = libxml-2.0 libzip
-OPTS    = -g -fpermissive
+OPTS    = -g -fpermissive -fPIC
 FLAGS = $(shell pkg-config ${PKGS} --cflags) ${OPTS}
 LIBS = $(shell pkg-config ${PKGS} --libs)
 OBJS    = BitReader.o MobiBook.o MobiDumper.o Locale.o Epub.o Zip.o Xml.o

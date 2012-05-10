@@ -24,8 +24,9 @@ public:
     } Element;
     
     Xml(string xmlstring);
-    Xml(const char * xmlstring);
+    Xml(const char * xmlstring, int len);
     
+    bool isValid() { return doc!=NULL; }
     std::vector<string> xpath(string expr);
     
     virtual ~Xml();

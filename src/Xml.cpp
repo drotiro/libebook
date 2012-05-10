@@ -7,31 +7,41 @@
  */
 
 #include "Xml.h"
+#include <iostream>
+#include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
+#include <string.h>
 
 bool Xml::initDone = Xml::doInit();
 
 bool Xml::doInit() {
     xmlInitParser();
+    std::cerr << "Init done." << std::endl;
     return true;
 }
 
 
 Xml::Xml(string xmlstring) {
-    Xml(xmlstring.c_str());
+    doc = xmlReadMemory(xmlstring.c_str(), xmlstring.size(),
+            "Xml.xml", "UTF-8", XML_PARSE_RECOVER | XML_PARSE_NONET );
 }
 
-Xml::Xml(const char * xmlstring) {
-    doc = xmlReadDoc( (const xmlChar*)xmlstring, "Xml.xml", "UTF-8", 
-	    XML_PARSE_RECOVER | XML_PARSE_NONET );    
+Xml::Xml(const char * xmlstring, int len) {
+    doc = xmlReadMemory( xmlstring, len,
+        "Xml.xml", "UTF-8", XML_PARSE_RECOVER | XML_PARSE_NONET );
 }
 
 std::vector<string> Xml::xpath(string expr) {
     std::vector<string> res;
+    if(!isValid()) return res;
     xmlXPathContext * context = xmlXPathNewContext(doc);
-    xmlXPathObject * result = xmlXPathEvalExpression((xmlChar*)expr.c_str(), context);
+    if(!context) {
+        return res;
+    }
     
+    xmlXPathObject * result = xmlXPathEvalExpression((xmlChar*)expr.c_str(), context);
+
     xmlNodeSet * nodeset;
     xmlChar * nsi;
     if(result) {
@@ -45,7 +55,7 @@ std::vector<string> Xml::xpath(string expr) {
 	    }
 	}
     }  
-    
+
     xmlXPathFreeObject(result);
     xmlXPathFreeContext(context);
     return res;
@@ -54,4 +64,3 @@ std::vector<string> Xml::xpath(string expr) {
 Xml::~Xml() {
     if(doc) xmlFreeDoc(doc);
 }
-
