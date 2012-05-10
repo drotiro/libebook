@@ -7,7 +7,6 @@
  */
 
 #include "Xml.h"
-#include <iostream>
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
@@ -17,7 +16,6 @@ bool Xml::initDone = Xml::doInit();
 
 bool Xml::doInit() {
     xmlInitParser();
-    std::cerr << "Init done." << std::endl;
     return true;
 }
 

@@ -10,6 +10,7 @@
 #include "Xml.h"
 
 using std::string;
+using std::vector;
 
 Epub *	Epub::createFromFile(const char *fileName) {
     Epub * book = new Epub();
@@ -31,19 +32,34 @@ bool Epub::check() {
     // read opf path from container
     string container = zf->getFile("META-INF/container.xml");
     Xml cx(container);
-    std::vector<string> xr = cx.xpath("//rootfile/@full-path");
+    vector<string> xr = cx.xpath("//rootfile/@full-path");
     if(xr.size() == 0 )  return false;
+    string opfpath = xr[0];
+    base = opfpath.substr(0, opfpath.find_last_of('/'));
     
     // parse opf
     Xml::nslist * ns = new Xml::nslist();
     (*ns)["dc"] = "http://purl.org/dc/elements/1.1/";
-    Xml opf(zf->getFile(xr[0]));
+    (*ns)["opf"] = "http://www.idpf.org/2007/opf";
+    Xml opf(zf->getFile(opfpath));
     xr = opf.xpath("//dc:title", ns);
     if(xr.size()) title = xr[0];
     xr = opf.xpath("//dc:creator", ns);
     if(xr.size()) author = xr[0];
     xr = opf.xpath("//dc:publisher", ns);
     if(xr.size()) publisher = xr[0];
+    // Items:
+    // get //itemref/@idref and read the item's href
+    xr = opf.xpath("//opf:itemref/@idref", ns);
+    string ix;
+    vector<string> nestx;
+    for(vector<string>::iterator it = xr.begin(); it != xr.end(); ++it) {
+	ix = "//opf:item[@id='";
+	ix.append(*it);
+	ix.append("']/@href");
+	nestx = opf.xpath(ix, ns);
+	if(nestx.size()>0) items.push_back(nestx[0]);
+    }
     delete ns;
     
     return true;

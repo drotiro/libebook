@@ -11,6 +11,8 @@
 
 #include "Ebook.h"
 #include "Zip.h"
+#include <vector>
+#include <string>
 
 class Epub : public Ebook {
 public:
@@ -22,6 +24,8 @@ private:
     Epub() {};
     bool check();
     Zip * zf;
+    std::vector<std::string> items, resources;
+    std::string base;
 };
 
 #endif	/* EPUB_H */
