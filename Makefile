@@ -8,6 +8,6 @@ install: all
 	cp lib/* $(PREFIX)/lib
 	
 clean:
-	rm -f src/*.o src/*.so bin/*
+	rm -f src/*.o src/*.so bin/* lib/*
 
 .PHONY: all

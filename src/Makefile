@@ -10,6 +10,15 @@ TOBJS   = bookdump.o bookinfo.o
 TOOLS	= ${TOBJS:.o=}
 SONAME  = libebook.so
 
+# if we are on win...
+UNAME = $(shell uname -s)
+ifeq ($(findstring MINGW,$(UNAME)), "MINGW")
+    SONAME = libebook.so
+else
+    SONAME = libebook.dll
+endif
+
+
 # Dependencies (g++ -MM)
 BitReader.o: BitReader.cpp BitReader.h Utils.h
 bookdump.o: bookdump.cpp MobiBook.h Utils.h Ebook.h MobiDumper.h Epub.h \
