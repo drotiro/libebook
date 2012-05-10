@@ -31,16 +31,18 @@ bool Epub::check() {
     // read opf path from container
     string container = zf->getFile("META-INF/container.xml");
     Xml cx(container);
-    std::vector<string> xr = cx.xpath("//@full-path");
+    std::vector<string> xr = cx.xpath("//rootfile/@full-path");
     if(xr.size() == 0 )  return false;
     
     // parse opf
+    Xml::nslist * ns = new Xml::nslist();
+    (*ns)["dc"] = "http://purl.org/dc/elements/1.1/";
     Xml opf(zf->getFile(xr[0]));
-    xr = opf.xpath("/metadata/title");
+    xr = opf.xpath("//dc:title", ns);
     if(xr.size()) title = xr[0];
-    xr = opf.xpath("/metadata/creator");
+    xr = opf.xpath("//dc:creator", ns);
     if(xr.size()) author = xr[0];
-
+    delete ns;
     
     return true;
 }

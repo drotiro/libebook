@@ -23,21 +23,29 @@ bool Xml::doInit() {
 
 
 Xml::Xml(string xmlstring) {
+    //strip "default" namespace
+    size_t pos = xmlstring.find("xmlns="), pos1, pos2;
+    if (pos != string::npos) {
+        pos1 = xmlstring.find('"', pos); //open quotes
+        pos1 = xmlstring.find('"', pos1+1); //close
+        xmlstring.erase(pos, pos1-pos+1);
+    }
     doc = xmlReadMemory(xmlstring.c_str(), xmlstring.size(),
             "Xml.xml", "UTF-8", XML_PARSE_RECOVER | XML_PARSE_NONET );
 }
 
-Xml::Xml(const char * xmlstring, int len) {
-    doc = xmlReadMemory( xmlstring, len,
-        "Xml.xml", "UTF-8", XML_PARSE_RECOVER | XML_PARSE_NONET );
-}
-
-std::vector<string> Xml::xpath(string expr) {
+std::vector<string> Xml::xpath(string expr, Xml::nslist * xns) {
     std::vector<string> res;
     if(!isValid()) return res;
     xmlXPathContext * context = xmlXPathNewContext(doc);
     if(!context) {
         return res;
+    }
+    //register namespaces
+    if(xns)
+    for ( Xml::nslist::iterator it=xns->begin() ; it != xns->end(); it++ ) {
+        xmlXPathRegisterNs(context, 
+            (xmlChar*)it->first.c_str() , (xmlChar*)it->second.c_str());
     }
     
     xmlXPathObject * result = xmlXPathEvalExpression((xmlChar*)expr.c_str(), context);

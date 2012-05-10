@@ -10,7 +10,7 @@
 #define	XML_H
 
 #include <string>
-#include <set>
+#include <map>
 #include <vector>
 #include <libxml/parser.h>
 
@@ -20,14 +20,15 @@ class Xml {
 public:
     typedef struct {
 	string value, name;
-	std::set<string, string> attributes;
+	std::map<string, string> attributes;
     } Element;
     
+    typedef std::map<string, string> nslist;
+    
     Xml(string xmlstring);
-    Xml(const char * xmlstring, int len);
     
     bool isValid() { return doc!=NULL; }
-    std::vector<string> xpath(string expr);
+    std::vector<string> xpath(string expr, nslist * xns = NULL);
     
     virtual ~Xml();
 

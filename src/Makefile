@@ -10,6 +10,20 @@ TOBJS   = bookdump.o bookinfo.o
 TOOLS	= ${TOBJS:.o=}
 SONAME  = libebook.so
 
+# Dependencies (g++ -MM)
+BitReader.o: BitReader.cpp BitReader.h Utils.h
+bookdump.o: bookdump.cpp MobiBook.h Utils.h Ebook.h MobiDumper.h Epub.h \
+ Zip.h
+bookinfo.o: bookinfo.cpp MobiBook.h Utils.h Ebook.h Epub.h Zip.h Locale.h
+Epub.o: Epub.cpp Epub.h Ebook.h Zip.h Xml.h
+Locale.o: Locale.cpp Locale.h
+MobiBook.o: MobiBook.cpp MobiBook.h Utils.h Ebook.h BitReader.h \
+ MobiDumper.h
+MobiDumper.o: MobiDumper.cpp MobiDumper.h MobiBook.h Utils.h Ebook.h
+Xml.o: Xml.cpp Xml.h
+Zip.o: Zip.cpp Zip.h
+
+
 # Target
 lib: $(OBJS) $(HEADERS)
 	$(CXX) -shared -Wl,-soname,$(SONAME) -o ../lib/$(SONAME) $(OBJS) $(FLAGS) $(LIBS)
