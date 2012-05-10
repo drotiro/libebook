@@ -42,6 +42,8 @@ bool Epub::check() {
     if(xr.size()) title = xr[0];
     xr = opf.xpath("//dc:creator", ns);
     if(xr.size()) author = xr[0];
+    xr = opf.xpath("//dc:publisher", ns);
+    if(xr.size()) publisher = xr[0];
     delete ns;
     
     return true;
