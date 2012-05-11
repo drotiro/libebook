@@ -12,10 +12,10 @@ SONAME  = libebook.so
 
 # if we are on win...
 UNAME = $(shell uname -s)
-ifeq ($(findstring MINGW,$(UNAME)), "MINGW")
-    SONAME = libebook.so
-else
+ifeq ($(findstring MINGW,$(UNAME)), MINGW)
     SONAME = libebook.dll
+else
+    SONAME = libebook.so
 endif
 
 
