@@ -63,9 +63,38 @@ bool Epub::check() {
 }
 
 Dumper * Epub::getDumper(const char * outdir) {
-    return NULL; //TBD
+    return new EpubDumper(this, outdir);
 }
 
 Epub::~Epub() {
     delete zf;
 }
+
+void EpubDumper::dumpMetadata() {
+    std::map<string, string> meta;
+    meta["author"] = book->getAuthor();
+    meta["title"] = book->getTitle();
+    meta["publisher"] = book->getPublisher();
+    //meta["cover"] = imgNames[mobi->getCoverIndex()];
+
+    write("info.json", jsonize(meta));
+}
+
+void EpubDumper::dumpText() {
+    vector<string> items = epub->itemNames();
+    int pos;
+    vector<string>::iterator it;
+    for(it = items.begin(), pos = 0; it != items.end(); ++it, ++pos) {
+	write(it->c_str(), epub->getItem(pos));
+    }
+}
+
+void EpubDumper::dumpResources() {
+    vector<string> items = epub->resourceNames();
+    int pos;
+    vector<string>::iterator it;
+    for(it = items.begin(), pos = 0; it != items.end(); ++it, ++pos) {
+	write(it->c_str(), epub->getResource(pos));
+    }    
+}
+

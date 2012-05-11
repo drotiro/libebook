@@ -13,5 +13,5 @@ The library comes with two example tools:
 
 and
 
-    mobiinfo <ebook>
+    bookinfo <ebook>
 

@@ -38,5 +38,20 @@ private:
     std::string base;
 };
 
+class EpubDumper : public Dumper {
+
+public:
+    EpubDumper(Ebook * book, const char * op) : Dumper(book, op) {
+	epub = static_cast<Epub*>(book);
+    };
+    
+    void dumpResources();
+    void dumpMetadata();
+    void dumpText();
+    
+private:
+    Epub * epub;
+};
+
 #endif	/* EPUB_H */
 
