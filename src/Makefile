@@ -4,8 +4,8 @@ PKGS = libxml-2.0 libzip
 OPTS    = -g -fpermissive -fPIC
 FLAGS = $(shell pkg-config ${PKGS} --cflags) ${OPTS}
 LIBS = $(shell pkg-config ${PKGS} --libs)
-OBJS    = BitReader.o MobiBook.o MobiDumper.o Locale.o Epub.o Zip.o Xml.o
-HEADERS = $(OBJS:.o=.h) Utils.h Ebook.h
+OBJS    = BitReader.o MobiBook.o MobiDumper.o Locale.o Epub.o Zip.o Xml.o Ebook.o
+HEADERS = $(OBJS:.o=.h) Utils.h
 TOBJS   = bookdump.o bookinfo.o
 TOOLS	= ${TOBJS:.o=}
 SONAME  = libebook.so
@@ -31,6 +31,7 @@ MobiBook.o: MobiBook.cpp MobiBook.h Utils.h Ebook.h BitReader.h \
 MobiDumper.o: MobiDumper.cpp MobiDumper.h MobiBook.h Utils.h Ebook.h
 Xml.o: Xml.cpp Xml.h
 Zip.o: Zip.cpp Zip.h
+Ebook.o: Ebook.cpp Ebook.h Utils.h
 
 
 # Target

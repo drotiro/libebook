@@ -9,9 +9,6 @@
 #include "Epub.h"
 #include "Xml.h"
 
-using std::string;
-using std::vector;
-
 Epub *	Epub::createFromFile(const char *fileName) {
     Epub * book = new Epub();
     book->zf = new Zip(fileName);

@@ -11,6 +11,16 @@
 #ifndef Utils_h
 #define Utils_h
 
+#ifdef _WIN32
+ #include <stdlib.h>
+ #define SEP "\\"
+ #define PATHLEN MAX_PATH
+#else
+ #include <limits.h>
+ #define SEP "/"
+ #define PATHLEN PATH_MAX
+#endif
+
 #if defined(_UNICODE) && !defined(UNICODE)
 #define UNICODE
 #endif

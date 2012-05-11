@@ -14,11 +14,21 @@
 #include <vector>
 #include <string>
 
+using std::string;
+using std::vector;
+
 class Epub : public Ebook {
 public:
     static Epub *	createFromFile(const char *fileName);
-    Dumper *		getDumper(const char * outdir);
-    virtual ~Epub();
+    vector<string>	itemNames() { return items; }
+    vector<string>	resourceNames() { return resources; }
+    int			itemCount() { return items.size(); }
+    int			resourceCount() { return resources.size(); }
+    std::string		getItem(int pos) { return zf->getFile(items[pos]); }
+    std::string		getResource(int pos) { return zf->getFile(resources[pos]); }
+    
+    Dumper *	getDumper(const char * outdir);
+    virtual	~Epub();
 
 private:
     Epub() {};

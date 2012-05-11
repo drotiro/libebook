@@ -20,7 +20,7 @@ public:
 	scanLinks();
     }
 
-    void dumpImages();
+    void dumpResources();
     void dumpText();
     void dumpMetadata();
 
@@ -31,10 +31,7 @@ private:
     std::vector<int> filepos;
 
 
-    void jsonAdd(std::string &, std::string, std::string);
     std::string fixLinks(std::string );
-    void write(const char * name, std::string content);
-    void write(const char * name, char* content, size_t len);
     void scanImages();
     void scanLinks();
 };

@@ -18,63 +18,17 @@ using std::vector;
 
 #define FPOSLEN 10
 
-#ifdef _WIN32
- #include <stdlib.h>
- #define SEP "\\"
- #define PATHLEN MAX_PATH
-#else
- #include <limits.h>
- #define SEP "/"
- #define PATHLEN PATH_MAX
-#endif
-
-string replaceAll(string & src, string what, string with) {
-    string::size_type pos = src.find(what),
-	len = what.length(),
-	rlen = with.length();
-    while(pos!=string::npos) {
-	src.replace(pos, len, with);
-	pos = src.find(what, pos+rlen);
-    }
-    return src;
-}
-
 MobiDumper::~MobiDumper() {
 }
 
-void MobiDumper::write(const char * name, string content) {
-    FILE * f;
-    char fname[PATHLEN];
-    sprintf(fname, "%s%s%s", outDir, SEP, name);
-    f = fopen(fname, "wb");
-    fprintf(f,"%s", content.c_str());
-    fclose(f);
-}
-
-void MobiDumper::write(const char * name, char * content, size_t len) {
-    FILE * f;
-    char fname[PATHLEN];
-    sprintf(fname, "%s%s%s", outDir, SEP, name);
-    f = fopen(fname, "wb");
-    fwrite(content, 1, len, f);
-    fclose(f);
-}
-
-void MobiDumper::jsonAdd(string & js, string key, string val) {
-    js.append("\"").append(key).append("\":\"");
-    js.append(replaceAll(val, "/", "\\/")).append("\",");
-}
-
 void MobiDumper::dumpMetadata() {
-    string js = "{";
-    jsonAdd(js, "author", book->getAuthor());
-    jsonAdd(js, "publisher", book->getPublisher());
-    jsonAdd(js, "title", book->getTitle());
-    jsonAdd(js, "cover", imgNames[mobi->getCoverIndex()]);
-    //remove last comma before closing
-    js.replace(js.length()-1, 1, "}");
+    std::map<string, string> meta;
+    meta["author"] = book->getAuthor();
+    meta["title"] = book->getTitle();
+    meta["publisher"] = book->getPublisher();
+    meta["cover"] = imgNames[mobi->getCoverIndex()];
 
-    write("info.json", js);
+    write("info.json", jsonize(meta));
 }
 
 string MobiDumper::fixLinks(string src) {
@@ -121,7 +75,7 @@ void MobiDumper::dumpText() {
     write("text.html", fixLinks(text));
 }
 
-void MobiDumper::dumpImages() {
+void MobiDumper::dumpResources() {
 	ImageData * id;
 	
 	for(int i = 1; i <= mobi->imagesCount; ++i) {

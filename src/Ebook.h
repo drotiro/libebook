@@ -1,14 +1,16 @@
 /* 
  * Ebook 
- * Common interface for the variou formats
+ * Common interface for the various formats
  * 
  * Author:  Domenico Rotiroti
  * License: GPL3 (see COPYING)
  */
 
-#include <string>
 #ifndef EBOOK_H
 #define	EBOOK_H
+
+#include <string>
+#include <map>
 
 // forward decl
 class Dumper;
@@ -38,11 +40,11 @@ public:
     //Dump everything in outdir
     void dump() {
 	dumpText();
-	dumpImages();
+	dumpResources();
 	dumpMetadata();
     }
     
-    virtual void dumpImages() = 0;
+    virtual void dumpResources() = 0;
     virtual void dumpText() = 0;
     virtual void dumpMetadata() = 0;
 
@@ -50,6 +52,10 @@ public:
     virtual ~Dumper() {};
 
 protected:
+    void	write(const char * name, std::string content);
+    void	write(const char * name, char* content, size_t len);
+    std::string	jsonize(std::map<std::string, std::string> kv);
+    std::string replaceAll(std::string & src, std::string what, std::string with);
     const char *	outDir;
     Ebook *		book;
 
