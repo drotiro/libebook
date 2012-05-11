@@ -8,6 +8,7 @@
 
 #include "Epub.h"
 #include "Xml.h"
+#include <algorithm>
 
 Epub *	Epub::createFromFile(const char *fileName) {
     Epub * book = new Epub();
@@ -32,7 +33,7 @@ bool Epub::check() {
     vector<string> xr = cx.xpath("//rootfile/@full-path");
     if(xr.size() == 0 )  return false;
     string opfpath = xr[0];
-    base = opfpath.substr(0, opfpath.find_last_of('/'));
+    base = opfpath.substr(0, opfpath.find_last_of('/')+1);
     
     // parse opf
     Xml::nslist * ns = new Xml::nslist();
@@ -57,8 +58,15 @@ bool Epub::check() {
 	nestx = opf.xpath(ix, ns);
 	if(nestx.size()>0) items.push_back(nestx[0]);
     }
+    // Resources:
+    // <item> not in vector items
+    xr = opf.xpath("//opf:item/@href", ns);
+    for(vector<string>::iterator it = xr.begin(); it != xr.end(); ++it) {
+	if(std::find(items.begin(), items.end(), *it) == items.end())
+	    resources.push_back(*it);
+    }
     delete ns;
-    
+
     return true;
 }
 
@@ -94,7 +102,8 @@ void EpubDumper::dumpResources() {
     int pos;
     vector<string>::iterator it;
     for(it = items.begin(), pos = 0; it != items.end(); ++it, ++pos) {
-	write(it->c_str(), epub->getResource(pos));
+	vector<unsigned char> res = epub->getResource(pos);
+	write(it->c_str(), (char*)&res[0], res.size());
     }    
 }
 

@@ -24,8 +24,8 @@ public:
     vector<string>	resourceNames() { return resources; }
     int			itemCount() { return items.size(); }
     int			resourceCount() { return resources.size(); }
-    std::string		getItem(int pos) { return zf->getFile(items[pos]); }
-    std::string		getResource(int pos) { return zf->getFile(resources[pos]); }
+    string		getItem(int pos) { return zf->getFile(base+items[pos]); }
+    vector<unsigned char>	getResource(int pos) { return zf->getBinaryFile(base+resources[pos]); }
     
     Dumper *	getDumper(const char * outdir);
     virtual	~Epub();

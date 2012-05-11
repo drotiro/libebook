@@ -37,6 +37,23 @@ string Zip::getFile(string path) {
     return res;
 }
 
+std::vector<unsigned char> Zip::getBinaryFile(std::string path) {
+    int pos = zip_name_locate(archive, path.c_str(), ZIP_FL_NOCASE) != -1;
+    std::vector<unsigned char> res;
+    if(pos < 0 ) return res;
+    
+    char buf[BUFSIZE];
+    zip_file * f = zip_fopen(archive, path.c_str(), 0);
+    if(!f) return res;
+    int read = zip_fread(f, buf, BUFSIZE);
+    while(read>0) {
+	res.insert(res.end(), buf, buf+read);
+	read = zip_fread(f, buf, BUFSIZE);
+    }
+    zip_fclose(f);
+    return res;    
+}
+
 Zip::~Zip() {
     if(isValid()) zip_close(archive);
 }
