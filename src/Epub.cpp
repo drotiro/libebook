@@ -11,6 +11,11 @@
 #include "Xml.h"
 #include <algorithm>
 
+const string Epub::dcns = "http://purl.org/dc/elements/1.1/";
+const string Epub::dcpref = "dc";
+const string Epub::opfns = "http://www.idpf.org/2007/opf";
+const string Epub::opfpref = "opf";
+
 Epub *	Epub::createFromFile(const char *fileName) {
     Epub * book = new Epub();
     book->zf = new Zip(fileName);
@@ -38,22 +43,31 @@ bool Epub::check() {
     
     // parse opf
     Xml::nslist * ns = new Xml::nslist();
-    (*ns)["dc"] = "http://purl.org/dc/elements/1.1/";
-    Xml opf(zf->getFile(opfpath));
-    xr = opf.xpath("//dc:title", ns);
+    string opfxml = zf->getFile(opfpath), pref="//";
+    if(opfxml.find(dcns)!=string::npos) {
+	(*ns)[dcpref] = dcns;
+	pref.append(dcpref+":");
+    }
+    Xml opf(opfxml);
+    xr = opf.xpath(pref+"title", ns);
     if(xr.size()) title = xr[0];
-    xr = opf.xpath("//dc:creator", ns);
+    xr = opf.xpath(pref+"creator", ns);
     if(xr.size()) author = xr[0];
-    xr = opf.xpath("//dc:publisher", ns);
+    xr = opf.xpath(pref+"publisher", ns);
     if(xr.size()) publisher = xr[0];
     // Items:
     // get //itemref/@idref and read the item's href
-    (*ns)["opf"] = "http://www.idpf.org/2007/opf";
-    xr = opf.xpath("//opf:itemref/@idref", ns);
+    pref = "//";
+    if(opfxml.find(opfns)!=string::npos) {
+	(*ns)[opfpref] = opfns;
+	pref.append(opfpref+":");
+    }
+
+    xr = opf.xpath(pref+"itemref/@idref", ns);
     string ix;
     vector<string> nestx;
     for(vector<string>::iterator it = xr.begin(); it != xr.end(); ++it) {
-	ix = "//opf:item[@id='";
+	ix = pref+"item[@id='";
 	ix.append(*it);
 	ix.append("']/@href");
 	nestx = opf.xpath(ix, ns);
@@ -61,7 +75,7 @@ bool Epub::check() {
     }
     // Resources:
     // <item> not in vector items
-    xr = opf.xpath("//opf:item/@href", ns);
+    xr = opf.xpath(pref+"item/@href", ns);
     for(vector<string>::iterator it = xr.begin(); it != xr.end(); ++it) {
 	if(std::find(items.begin(), items.end(), *it) == items.end())
 	    resources.push_back(*it);

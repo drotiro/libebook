@@ -34,8 +34,9 @@ private:
     Epub() {};
     bool check();
     Zip * zf;
-    std::vector<std::string> items, resources;
-    std::string base;
+    vector<string> items, resources;
+    string base;
+    const static string dcns, dcpref, opfns, opfpref;
 };
 
 class EpubDumper : public Dumper {
