@@ -39,7 +39,6 @@ bool Epub::check() {
     // parse opf
     Xml::nslist * ns = new Xml::nslist();
     (*ns)["dc"] = "http://purl.org/dc/elements/1.1/";
-    (*ns)["opf"] = "http://www.idpf.org/2007/opf";
     Xml opf(zf->getFile(opfpath));
     xr = opf.xpath("//dc:title", ns);
     if(xr.size()) title = xr[0];
@@ -49,6 +48,7 @@ bool Epub::check() {
     if(xr.size()) publisher = xr[0];
     // Items:
     // get //itemref/@idref and read the item's href
+    (*ns)["opf"] = "http://www.idpf.org/2007/opf";
     xr = opf.xpath("//opf:itemref/@idref", ns);
     string ix;
     vector<string> nestx;
@@ -81,9 +81,16 @@ Epub::~Epub() {
 
 void EpubDumper::dumpMetadata() {
     JsonObj meta;
-    meta.addVal("author", book->getAuthor());
-    meta.addVal("title", book->getTitle());
-    meta.addVal("publisher", book->getPublisher());
+    meta.add("author", book->getAuthor());
+    meta.add("title", book->getTitle());
+    meta.add("publisher", book->getPublisher());
+    vector<JsonObj> res;
+    for(int i = 0; i < epub->resourceCount(); ++i) {
+	JsonObj ares;
+	ares.add("path", epub->resourceNames()[i]);
+	res.push_back(ares);
+    }
+    meta.add("res", res);
     //meta.addVal("cover", imgNames[mobi->getCoverIndex()]);
 
     write("info.json", meta.json());

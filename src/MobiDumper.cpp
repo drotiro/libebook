@@ -24,10 +24,10 @@ MobiDumper::~MobiDumper() {
 
 void MobiDumper::dumpMetadata() {
     JsonObj meta;
-    meta.addVal("author", book->getAuthor());
-    meta.addVal("title", book->getTitle());
-    meta.addVal("publisher", book->getPublisher());
-    meta.addVal("cover", imgNames[mobi->getCoverIndex()]);
+    meta.add("author", book->getAuthor());
+    meta.add("title", book->getTitle());
+    meta.add("publisher", book->getPublisher());
+    meta.add("cover", imgNames[mobi->getCoverIndex()]);
 
     write("info.json", meta.json());
 }

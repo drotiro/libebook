@@ -11,28 +11,38 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 using std::string;
 using std::map;
+using std::vector;
 
 class JsonObj {
 public:
     JsonObj() {}
     virtual ~JsonObj();
     
-    void addVal(string key, string val) {
+    JsonObj& add(string key, string val) {
 	strings[key] = val;
+	return *this;
     }
     
-    void addObj(string key, JsonObj& val) {
+    JsonObj& add(string key, JsonObj& val) {
 	objects[key] = val;
+	return *this;
     }
     
+    JsonObj& add(string key, vector<JsonObj>& val) {
+	arrays[key] = val;
+	return *this;
+    }
+
     string json();
     
 private:
     map<string, string> strings;
     map<string, JsonObj> objects;
+    map<string, vector<JsonObj> > arrays;
 };
 
 #endif	/* JSONOBJ_H */
