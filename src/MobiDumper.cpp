@@ -28,6 +28,13 @@ void MobiDumper::dumpMetadata() {
     meta.add("title", book->getTitle());
     meta.add("publisher", book->getPublisher());
     meta.add("cover", imgNames[mobi->getCoverIndex()]);
+    vector<JsonObj> res;
+    for(int i = 0; i < imgNames.size(); ++i) {
+	JsonObj ares;
+	ares.add("path", imgNames[i]);
+	res.push_back(ares);
+    }
+    meta.add("res", res);
 
     write("info.json", meta.json());
 }
