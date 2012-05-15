@@ -18,6 +18,7 @@
 #include <time.h>
 #include <iostream>
 #include <string.h>
+#include <stdlib.h>
 
 // From (Base)Utils
 inline void *memdup(void *data, size_t len)
