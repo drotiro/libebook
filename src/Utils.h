@@ -11,6 +11,8 @@
 #ifndef Utils_h
 #define Utils_h
 
+#include <string>
+
 #ifdef _WIN32
  #include <stdlib.h>
  #define SEP "\\"
@@ -28,16 +30,6 @@
 #define _UNICODE
 #endif
 
-#ifdef DEBUG
-#define _CRTDBG_MAP_ALLOC
-#endif
-#include <stdlib.h>
-#ifdef DEBUG
-#include <crtdbg.h>
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
-
 /* Few most common includes for C stdlib */
 #include <assert.h>
 #include <stdio.h>
@@ -51,11 +43,6 @@
 #endif
 #include <wchar.h>
 #include <string.h>
-
-/* Ugly name, but the whole point is to make things shorter.
-   SAZA = Struct Allocate and Zero memory for Array
-   (note: use operator new for single structs/classes) */
-#define SAZA(struct_name, n) (struct_name *)calloc((n), sizeof(struct_name))
 
 /* compile-time assert */
 #define STATIC_ASSERT(exp, name) typedef int assert_##name [(exp) != false]
@@ -98,12 +85,5 @@ STATIC_ASSERT(4 == sizeof(uint32),  uint32_is_4_bytes);
 STATIC_ASSERT(8 == sizeof(int64),   int64_is_8_bytes);
 STATIC_ASSERT(8 == sizeof(uint64),  uint64_is_8_bytes);
 
-inline void *memdup(void *data, size_t len)
-{
-    void *dup = malloc(len);
-    if (dup)
-        memcpy(dup, data, len);
-    return dup;
-}
-#define _memdup(ptr) memdup(ptr, sizeof(*(ptr)))
+std::string replaceAll(std::string & src, std::string what, std::string with);
 #endif

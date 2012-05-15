@@ -54,8 +54,7 @@ public:
 protected:
     void	write(const char * name, std::string content);
     void	write(const char * name, char* content, size_t len);
-    std::string	jsonize(std::map<std::string, std::string> kv);
-    std::string replaceAll(std::string & src, std::string what, std::string with);
+
     const char *	outDir;
     Ebook *		book;
 

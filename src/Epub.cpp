@@ -7,6 +7,7 @@
  */
 
 #include "Epub.h"
+#include "JsonObj.h"
 #include "Xml.h"
 #include <algorithm>
 
@@ -79,13 +80,13 @@ Epub::~Epub() {
 }
 
 void EpubDumper::dumpMetadata() {
-    std::map<string, string> meta;
-    meta["author"] = book->getAuthor();
-    meta["title"] = book->getTitle();
-    meta["publisher"] = book->getPublisher();
-    //meta["cover"] = imgNames[mobi->getCoverIndex()];
+    JsonObj meta;
+    meta.addVal("author", book->getAuthor());
+    meta.addVal("title", book->getTitle());
+    meta.addVal("publisher", book->getPublisher());
+    //meta.addVal("cover", imgNames[mobi->getCoverIndex()]);
 
-    write("info.json", jsonize(meta));
+    write("info.json", meta.json());
 }
 
 void EpubDumper::dumpText() {

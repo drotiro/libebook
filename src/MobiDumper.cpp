@@ -8,6 +8,7 @@
  */
 
 #include "MobiDumper.h"
+#include "JsonObj.h"
 #include <iostream>
 #include <stdio.h>
 #include <algorithm>
@@ -22,13 +23,13 @@ MobiDumper::~MobiDumper() {
 }
 
 void MobiDumper::dumpMetadata() {
-    std::map<string, string> meta;
-    meta["author"] = book->getAuthor();
-    meta["title"] = book->getTitle();
-    meta["publisher"] = book->getPublisher();
-    meta["cover"] = imgNames[mobi->getCoverIndex()];
+    JsonObj meta;
+    meta.addVal("author", book->getAuthor());
+    meta.addVal("title", book->getTitle());
+    meta.addVal("publisher", book->getPublisher());
+    meta.addVal("cover", imgNames[mobi->getCoverIndex()]);
 
-    write("info.json", jsonize(meta));
+    write("info.json", meta.json());
 }
 
 string MobiDumper::fixLinks(string src) {

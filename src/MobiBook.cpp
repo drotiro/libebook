@@ -19,6 +19,22 @@
 #include <iostream>
 #include <string.h>
 
+// From (Base)Utils
+inline void *memdup(void *data, size_t len)
+{
+    void *dup = malloc(len);
+    if (dup)
+        memcpy(dup, data, len);
+    return dup;
+}
+#define _memdup(ptr) memdup(ptr, sizeof(*(ptr)))
+
+/* Ugly name, but the whole point is to make things shorter.
+   SAZA = Struct Allocate and Zero memory for Array
+   (note: use operator new for single structs/classes) */
+#define SAZA(struct_name, n) (struct_name *)calloc((n), sizeof(struct_name))
+
+
 // Parse mobi format http://wiki.mobileread.com/wiki/MOBI
 
 #define err(msg) std::cerr << "[ERROR] " << msg << std::endl;
