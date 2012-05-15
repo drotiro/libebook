@@ -9,6 +9,7 @@
 #include "Epub.h"
 #include "JsonObj.h"
 #include "Xml.h"
+#include "Utils.h"
 #include <algorithm>
 
 const string Epub::dcns = "http://purl.org/dc/elements/1.1/";
@@ -43,39 +44,42 @@ bool Epub::check() {
     
     // parse opf
     Xml::nslist * ns = new Xml::nslist();
-    string opfxml = zf->getFile(opfpath), pref="//";
-    if(opfxml.find(dcns)!=string::npos) {
-	(*ns)[dcpref] = dcns;
-	pref.append(dcpref+":");
-    }
+
+    string opfxml = zf->getFile(opfpath);
+    (*ns)[dcpref] = dcns;
+    (*ns)[opfpref] = opfns;
+    string mydc = (opfxml.find("<title")==string::npos ? "//dc:" : "//");
+    string myopf = (opfxml.find("<item")==string::npos ? "//opf:" : "//");
+
     Xml opf(opfxml);
-    xr = opf.xpath(pref+"title", ns);
+    xr = opf.xpath(mydc+"title", ns);
     if(xr.size()) title = xr[0];
-    xr = opf.xpath(pref+"creator", ns);
+    xr = opf.xpath(mydc+"creator", ns);
     if(xr.size()) author = xr[0];
-    xr = opf.xpath(pref+"publisher", ns);
+    xr = opf.xpath(mydc+"publisher", ns);
     if(xr.size()) publisher = xr[0];
+    string coverId;
+    xr = opf.xpath("//meta[@name='cover']/@content", ns);
+    
     // Items:
     // get //itemref/@idref and read the item's href
-    pref = "//";
-    if(opfxml.find(opfns)!=string::npos) {
-	(*ns)[opfpref] = opfns;
-	pref.append(opfpref+":");
-    }
 
-    xr = opf.xpath(pref+"itemref/@idref", ns);
+    xr = opf.xpath(myopf+"itemref/@idref", ns);
     string ix;
     vector<string> nestx;
     for(vector<string>::iterator it = xr.begin(); it != xr.end(); ++it) {
-	ix = pref+"item[@id='";
+	ix = myopf+"item[@id='";
 	ix.append(*it);
 	ix.append("']/@href");
 	nestx = opf.xpath(ix, ns);
-	if(nestx.size()>0) items.push_back(nestx[0]);
+	if(nestx.size()>0) {
+	    items.push_back(nestx[0]);
+	    if(it->compare(coverId) == 0) coverIndex = items.size()-1;
+	}
     }
     // Resources:
     // <item> not in vector items
-    xr = opf.xpath(pref+"item/@href", ns);
+    xr = opf.xpath(myopf+"item/@href", ns);
     for(vector<string>::iterator it = xr.begin(); it != xr.end(); ++it) {
 	if(std::find(items.begin(), items.end(), *it) == items.end())
 	    resources.push_back(*it);
@@ -98,6 +102,8 @@ void EpubDumper::dumpMetadata() {
     meta.add("author", book->getAuthor());
     meta.add("title", book->getTitle());
     meta.add("publisher", book->getPublisher());
+    if(epub->getCover() >= 0)
+	meta.add("cover", epub->itemNames()[epub->getCover()]);
     vector<JsonObj> res;
     for(int i = 0; i < epub->resourceCount(); ++i) {
 	JsonObj ares;
@@ -105,7 +111,6 @@ void EpubDumper::dumpMetadata() {
 	res.push_back(ares);
     }
     meta.add("res", res);
-    //meta.addVal("cover", imgNames[mobi->getCoverIndex()]);
 
     write("info.json", meta.json());
 }

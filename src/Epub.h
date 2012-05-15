@@ -24,6 +24,7 @@ public:
     vector<string>	resourceNames() { return resources; }
     int			itemCount() { return items.size(); }
     int			resourceCount() { return resources.size(); }
+    int			getCover() {return coverIndex; }
     string		getItem(int pos) { return zf->getFile(base+items[pos]); }
     vector<unsigned char>	getResource(int pos) { return zf->getBinaryFile(base+resources[pos]); }
     
@@ -31,11 +32,12 @@ public:
     virtual	~Epub();
 
 private:
-    Epub() {};
+    Epub() : coverIndex(-1) {};
     bool check();
     Zip * zf;
     vector<string> items, resources;
     string base;
+    int coverIndex;
     const static string dcns, dcpref, opfns, opfpref;
 };
 
