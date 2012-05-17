@@ -13,22 +13,40 @@
 #include <map>
 #include <vector>
 #include <libxml/parser.h>
+#include <libxml/xpath.h>
+#include <libxml/xpathInternals.h>
 
 using std::string;
 
+typedef std::map<string, string> nslist;
+
+class Xpath {
+	friend class Xml;
+public:
+	std::vector<string>	query(string expr);
+	string		get(string expr);
+
+	~Xpath();    
+
+private:
+	Xpath(xmlDoc * doc, nslist * ns);
+    
+	xmlXPathContext * context;
+	
+};
+
 class Xml {
 public:
-    typedef struct {
+/*    typedef struct {
 	string value, name;
 	std::map<string, string> attributes;
     } Element;
-    
-    typedef std::map<string, string> nslist;
-    
+*/
+  
     Xml(string xmlstring);
     
     bool isValid() { return doc!=NULL; }
-    std::vector<string> xpath(string expr, nslist * xns = NULL);
+    Xpath xpath(nslist * ns = NULL) { return Xpath(doc, ns); }
     
     virtual ~Xml();
 

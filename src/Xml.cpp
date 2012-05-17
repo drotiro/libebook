@@ -7,10 +7,6 @@
  */
 
 #include "Xml.h"
-#include <libxml/tree.h>
-#include <libxml/xpath.h>
-#include <libxml/xpathInternals.h>
-#include <string.h>
 
 bool Xml::initDone = Xml::doInit();
 
@@ -32,18 +28,10 @@ Xml::Xml(string xmlstring) {
             "Xml.xml", "UTF-8", XML_PARSE_RECOVER | XML_PARSE_NONET );
 }
 
-std::vector<string> Xml::xpath(string expr, Xml::nslist * xns) {
+std::vector<string> Xpath::query(string expr) {
     std::vector<string> res;
-    if(!isValid()) return res;
-    xmlXPathContext * context = xmlXPathNewContext(doc);
     if(!context) {
         return res;
-    }
-    //register namespaces
-    if(xns)
-    for ( Xml::nslist::iterator it=xns->begin() ; it != xns->end(); it++ ) {
-        xmlXPathRegisterNs(context, 
-            (xmlChar*)it->first.c_str() , (xmlChar*)it->second.c_str());
     }
     
     xmlXPathObject * result = xmlXPathEvalExpression((xmlChar*)expr.c_str(), context);
@@ -55,7 +43,7 @@ std::vector<string> Xml::xpath(string expr, Xml::nslist * xns) {
 	else if(result->type == XPATH_NODESET) {
 	    nodeset = result->nodesetval;
 	    if (nodeset) for (int i=0; i < nodeset->nodeNr; i++) {
-		nsi = xmlNodeListGetString(doc, nodeset->nodeTab[i]->xmlChildrenNode, 1);
+		nsi = xmlNodeListGetString(context->doc, nodeset->nodeTab[i]->xmlChildrenNode, 1);
 		res.push_back((char *)nsi);
 		xmlFree(nsi);
 	    }
@@ -63,10 +51,30 @@ std::vector<string> Xml::xpath(string expr, Xml::nslist * xns) {
     }  
 
     xmlXPathFreeObject(result);
-    xmlXPathFreeContext(context);
     return res;
+}
+
+string	Xpath::get(string expr) {
+    std::vector<string> res = query(expr);
+    if(res.size()) return res[0];
+    return "";
 }
 
 Xml::~Xml() {
     if(doc) xmlFreeDoc(doc);
+}
+
+
+Xpath::Xpath(xmlDoc * doc, nslist * ns) {
+    context = xmlXPathNewContext(doc);
+
+    if(ns && context)
+	for ( nslist::iterator it=ns->begin() ; it != ns->end(); it++ ) {
+		xmlXPathRegisterNs(context, 
+		(xmlChar*)it->first.c_str() , (xmlChar*)it->second.c_str());
+    }
+}
+
+Xpath::~Xpath() {
+    if(context) xmlXPathFreeContext(context);
 }

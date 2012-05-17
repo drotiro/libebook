@@ -37,13 +37,14 @@ bool Epub::check() {
     // read opf path from container
     string container = zf->getFile("META-INF/container.xml");
     Xml cx(container);
-    vector<string> xr = cx.xpath("//rootfile/@full-path");
+    Xpath cp = cx.xpath();
+    vector<string> xr = cp.query("//rootfile/@full-path");
     if(xr.size() == 0 )  return false;
     string opfpath = xr[0];
     base = opfpath.substr(0, opfpath.find_last_of('/')+1);
-    
+
     // parse opf
-    Xml::nslist * ns = new Xml::nslist();
+    nslist * ns = new nslist();
 
     string opfxml = zf->getFile(opfpath);
     (*ns)[dcpref] = dcns;
@@ -52,26 +53,23 @@ bool Epub::check() {
     string myopf = (opfxml.find("<item")==string::npos ? "//opf:" : "//");
 
     Xml opf(opfxml);
-    xr = opf.xpath(mydc+"title", ns);
-    if(xr.size()) title = xr[0];
-    xr = opf.xpath(mydc+"creator", ns);
-    if(xr.size()) author = xr[0];
-    xr = opf.xpath(mydc+"publisher", ns);
-    if(xr.size()) publisher = xr[0];
-    string coverId;
-    xr = opf.xpath("//meta[@name='cover']/@content", ns);
+    Xpath ox = opf.xpath(ns);
+    title = ox.get(mydc+"title");
+    author = ox.get(mydc+"creator");
+    publisher = ox.get(mydc+"publisher");
+    string coverId = ox.get("//meta[@name='cover']/@content");
     
     // Items:
     // get //itemref/@idref and read the item's href
 
-    xr = opf.xpath(myopf+"itemref/@idref", ns);
+    xr = ox.query(myopf+"itemref/@idref");
     string ix;
     vector<string> nestx;
     for(vector<string>::iterator it = xr.begin(); it != xr.end(); ++it) {
 	ix = myopf+"item[@id='";
 	ix.append(*it);
 	ix.append("']/@href");
-	nestx = opf.xpath(ix, ns);
+	nestx = ox.query(ix);
 	if(nestx.size()>0) {
 	    items.push_back(nestx[0]);
 	    if(it->compare(coverId) == 0) coverIndex = items.size()-1;
@@ -79,7 +77,7 @@ bool Epub::check() {
     }
     // Resources:
     // <item> not in vector items
-    xr = opf.xpath(myopf+"item/@href", ns);
+    xr = ox.query(myopf+"item/@href");
     for(vector<string>::iterator it = xr.begin(); it != xr.end(); ++it) {
 	if(std::find(items.begin(), items.end(), *it) == items.end())
 	    resources.push_back(*it);
