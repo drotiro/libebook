@@ -11,6 +11,7 @@
 #include "Xml.h"
 #include "Utils.h"
 #include <algorithm>
+#include <iostream>
 
 const string Epub::dcns = "http://purl.org/dc/elements/1.1/";
 const string Epub::dcpref = "dc";
@@ -57,11 +58,12 @@ bool Epub::check() {
     title = ox.get(mydc+"title");
     author = ox.get(mydc+"creator");
     publisher = ox.get(mydc+"publisher");
+    // cover info
     string coverId = ox.get("//meta[@name='cover']/@content");
-    
+    string coverHref = ox.get(myopf+"item[@id='"+coverId+"']/@href");
+
     // Items:
     // get //itemref/@idref and read the item's href
-
     xr = ox.query(myopf+"itemref/@idref");
     string ix;
     vector<string> nestx;
@@ -72,15 +74,17 @@ bool Epub::check() {
 	nestx = ox.query(ix);
 	if(nestx.size()>0) {
 	    items.push_back(nestx[0]);
-	    if(it->compare(coverId) == 0) coverIndex = items.size()-1;
 	}
     }
+
     // Resources:
-    // <item> not in vector items
+    // <item> not in items vector
     xr = ox.query(myopf+"item/@href");
     for(vector<string>::iterator it = xr.begin(); it != xr.end(); ++it) {
-	if(std::find(items.begin(), items.end(), *it) == items.end())
-	    resources.push_back(*it);
+	if(std::find(items.begin(), items.end(), *it) == items.end()) {
+		if(coverHref.compare(*it) == 0) coverIndex = resources.size();
+		resources.push_back(*it);
+	}
     }
     delete ns;
 
@@ -101,7 +105,7 @@ void EpubDumper::dumpMetadata() {
     meta.add("title", book->getTitle());
     meta.add("publisher", book->getPublisher());
     if(epub->getCover() >= 0)
-	meta.add("cover", epub->itemNames()[epub->getCover()]);
+	meta.add("cover", epub->resourceNames()[epub->getCover()]);
     vector<JsonObj> res;
     for(int i = 0; i < epub->resourceCount(); ++i) {
 	JsonObj ares;
