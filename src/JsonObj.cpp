@@ -39,6 +39,17 @@ string JsonObj::json() {
 	}
 	js.append("]");
     }
+    // sarrays
+    for( std::map<string, vector<string> >::iterator it = sarrays.begin(); it != sarrays.end(); ++it) {
+	if(!empty) js.append(","); else empty = false;
+	js.append("\"").append(it->first).append("\":[");
+	aempty = true;
+	for( vector<string>::iterator ait = it->second.begin(); ait != it->second.end(); ++ait) {
+		if(!aempty) js.append(","); else aempty = false;
+		js.append("\"").append(replaceAll(*ait, "/", "\\/")).append("\"");
+	}
+	js.append("]");
+    }
 
     js.append("}");
     return js;

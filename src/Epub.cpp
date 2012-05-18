@@ -113,6 +113,8 @@ void EpubDumper::dumpMetadata() {
 	res.push_back(ares);
     }
     meta.add("res", res);
+    vector<string> itemNames = epub->itemNames();
+    meta.add("items", itemNames);
 
     write("info.json", meta.json());
 }

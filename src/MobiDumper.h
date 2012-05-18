@@ -27,7 +27,7 @@ public:
     virtual ~MobiDumper();
 private:
     MobiBook * mobi;
-    std::vector<std::string> imgNames;
+    std::vector<std::string> imgNames, txtFileNames;
     std::vector<int> filepos;
 
 

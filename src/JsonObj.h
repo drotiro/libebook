@@ -37,12 +37,18 @@ public:
 	return *this;
     }
 
+    JsonObj& add(string key, vector<string>& val) {
+	sarrays[key] = val;
+	return *this;
+    }
+
     string json();
     
 private:
     map<string, string> strings;
     map<string, JsonObj> objects;
     map<string, vector<JsonObj> > arrays;
+    map<string, vector<string> > sarrays;
 };
 
 #endif	/* JSONOBJ_H */

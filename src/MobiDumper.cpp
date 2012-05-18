@@ -34,6 +34,7 @@ void MobiDumper::dumpMetadata() {
 	ares.add("path", imgNames[i]);
 	res.push_back(ares);
     }
+    meta.add("items", txtFileNames);
     meta.add("res", res);
 
     write("info.json", meta.json());
@@ -77,10 +78,13 @@ void MobiDumper::dumpText() {
 	text = text.substr(0,*ip);
 	//write part
 	sprintf(fbuf, "text_%010d.html", *ip);
+	txtFileNames.push_back(fbuf);
 	write(fbuf, part);
     }
     
     write("text.html", fixLinks(text));
+    txtFileNames.push_back("text.html");
+    std::reverse(txtFileNames.begin(), txtFileNames.end());
 }
 
 void MobiDumper::dumpResources() {
