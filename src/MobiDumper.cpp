@@ -68,8 +68,14 @@ string MobiDumper::fixLinks(string src) {
 	replaceAll(src, f1, r1);
     }
 
+    // Step 3. remove mobipocket's page break
+    // (ok, it's not related to links, but fits well here)
+    replaceAll(src, "<mbp:pagebreak/>", "");
     return src;
 }
+
+#define HTML_PROLOG "<html><body>"
+#define HTML_EPILOG "</body></html>"
 
 void MobiDumper::dumpText() {
     char fbuf[24];
@@ -83,10 +89,10 @@ void MobiDumper::dumpText() {
 	//write part
 	sprintf(fbuf, "text_%010d.html", *ip);
 	txtFileNames.push_back(fbuf);
-	write(fbuf, part);
+	write(fbuf, HTML_PROLOG+part+HTML_EPILOG);
     }
-    
-    write("text.html", fixLinks(text));
+
+    write("text.html", fixLinks(text)+HTML_EPILOG);
     txtFileNames.push_back("text.html");
     std::reverse(txtFileNames.begin(), txtFileNames.end());
 }
@@ -135,6 +141,7 @@ void MobiDumper::scanLinks() {
 
 JsonObj MobiDumper::buildToc() {
     JsonObj toc;
+    char posstr[10];
     //dumpText should be called first!
     if(txtFileNames.size()==0) return toc;
 
@@ -147,8 +154,16 @@ JsonObj MobiDumper::buildToc() {
     Xml tocx(read(href));
     Xpath tx = tocx.xpath(NULL);
     vector<string> links = tx.query("//a[@href]/@href");
+    int pos;
     for(vector<string>::iterator it = links.begin(); it != links.end(); ++it) {
-	toc.add(*it, *it);
+	JsonObj item;
+	for(pos = txtFileNames.size()-1; pos >= 0; --pos) {
+	    if(txtFileNames[pos]==*it) break;
+	}
+	snprintf(posstr, 9, "%d", pos);
+	item.add("pos", posstr);
+	item.add("name", *it); //should be <a>.value
+	toc.add(*it, item);
     }
     
     return toc;
