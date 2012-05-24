@@ -42,7 +42,15 @@ public:
 	return *this;
     }
 
+    /* Return the json-encoded content of this object */
     string json();
+
+    bool empty() { 
+	return strings.empty() &&
+		arrays.empty() &&
+		objects.empty() &&
+		sarrays.empty();
+    }
     
 private:
     map<string, string> strings;

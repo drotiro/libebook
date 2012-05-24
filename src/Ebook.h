@@ -54,6 +54,7 @@ public:
 protected:
     void	write(const char * name, std::string content);
     void	write(const char * name, char* content, size_t len);
+    std::string	read(std::string name);
 
     const char *	outDir;
     Ebook *		book;

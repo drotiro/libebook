@@ -36,3 +36,20 @@ void Dumper::write(const char * name, char * content, size_t len) {
     fwrite(content, 1, len, f);
     fclose(f);
 }
+#define BUFLEN 4096
+string Dumper::read(string name) {
+    FILE * f;
+    string res;
+    char buf[BUFLEN];
+    size_t read;
+    
+    f = fopen(name.c_str(), "rb");
+    read = fread(buf, 1, BUFLEN, f);
+    while(read > 0) {
+	res.append(buf, read);
+	read = fread(buf, 1, BUFLEN, f);
+    }
+    
+    fclose(f);
+    return res;
+}

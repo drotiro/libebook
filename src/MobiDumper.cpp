@@ -9,6 +9,7 @@
 
 #include "MobiDumper.h"
 #include "JsonObj.h"
+#include "Xml.h"
 #include <iostream>
 #include <stdio.h>
 #include <algorithm>
@@ -37,6 +38,9 @@ void MobiDumper::dumpMetadata() {
     meta.add("items", txtFileNames);
     meta.add("res", res);
 
+    JsonObj toc = buildToc();
+    if(!toc.empty()) meta.add("toc", toc);
+    
     write("info.json", meta.json());
 }
 
@@ -127,4 +131,25 @@ void MobiDumper::scanLinks() {
     
     // sort them in reverse order
     std::sort(filepos.begin(), filepos.end(), std::greater<int>());
+}
+
+JsonObj MobiDumper::buildToc() {
+    JsonObj toc;
+    //dumpText should be called first!
+    if(txtFileNames.size()==0) return toc;
+
+    //look for toc reference in the first part
+    Xml ref(read(txtFileNames[0]));
+    Xpath rx = ref.xpath(NULL);
+    string href = rx.get("//reference[@type='toc']/@href");
+    if(href.empty()) return toc;
+    //open toc file and process 'a' elements
+    Xml tocx(href);
+    Xpath tx = tocx.xpath(NULL);
+    vector<string> links = tx.query("//a/@href");
+    for(vector<string>::iterator it = links.begin(); it != links.end(); ++it) {
+	toc.add(*it, *it);
+    }
+    
+    return toc;
 }

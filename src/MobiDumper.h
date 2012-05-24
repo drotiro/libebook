@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include "MobiBook.h"
+#include "JsonObj.h"
 
 class MobiDumper : public Dumper {
 public:
@@ -34,6 +35,7 @@ private:
     std::string fixLinks(std::string );
     void scanImages();
     void scanLinks();
+    JsonObj buildToc();
 };
 
 #endif	/* MOBIHTMLHELPER_H */

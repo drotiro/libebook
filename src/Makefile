@@ -28,8 +28,9 @@ Ebook.o: Ebook.cpp Ebook.h Utils.h
 Epub.o: Epub.cpp Epub.h Ebook.h Zip.h Xml.h
 JsonObj.o: JsonObj.cpp JsonObj.h Utils.h
 Locale.o: Locale.cpp Locale.h
-MobiBook.o: MobiBook.cpp MobiBook.h Utils.h Ebook.h BitReader.h MobiDumper.h
-MobiDumper.o: MobiDumper.cpp MobiDumper.h MobiBook.h Utils.h Ebook.h
+MobiBook.o: MobiBook.cpp MobiBook.h Utils.h Ebook.h BitReader.h MobiDumper.h \
+	JsonObj.h
+MobiDumper.o: MobiDumper.cpp MobiDumper.h MobiBook.h Utils.h Ebook.h JsonObj.h
 Utils.o: Utils.cpp Utils.h
 Xml.o: Xml.cpp Xml.h
 Zip.o: Zip.cpp Zip.h
