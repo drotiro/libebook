@@ -162,7 +162,10 @@ JsonObj MobiDumper::buildToc() {
 	}
 	snprintf(posstr, 9, "%d", pos);
 	item.add("pos", posstr);
-	item.add("name", *it); //should be <a>.value
+	string q("//a[@href='");
+	q.append(*it).append("']");
+	item.add("name", tx.get(q));
+	//item.add("name", *it); //should be <a>.value
 	toc.add(*it, item);
     }
     

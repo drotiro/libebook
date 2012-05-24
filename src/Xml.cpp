@@ -43,9 +43,17 @@ std::vector<string> Xpath::query(string expr) {
 	else if(result->type == XPATH_NODESET) {
 	    nodeset = result->nodesetval;
 	    if (nodeset) for (int i=0; i < nodeset->nodeNr; i++) {
-		nsi = xmlNodeListGetString(context->doc, nodeset->nodeTab[i]->xmlChildrenNode, 1);
-		res.push_back((char *)nsi);
-		xmlFree(nsi);
+		xmlNode * cn = nodeset->nodeTab[i];
+		nsi = xmlNodeListGetString(context->doc, cn->xmlChildrenNode, 1);
+		if(!nsi) { //try to get something
+		    while(cn->xmlChildrenNode != NULL)
+			cn = cn->xmlChildrenNode;
+		    nsi = xmlNodeListGetString(context->doc, cn, 1);
+		}
+		if(nsi) {
+			res.push_back((char *)nsi);
+			xmlFree(nsi);
+		}
 	    }
 	}
     }  
