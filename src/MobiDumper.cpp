@@ -48,12 +48,12 @@ string MobiDumper::fixLinks(string src) {
     char fbuf[24];
 
     // Step 1. fix a[@href]    
-    string fmark = "filepos=", href="href=text_";
+    string fmark = "filepos=", href="href=\"text_";
     size_t fml = fmark.length(), hl = href.length();
     string::size_type pos = src.find(fmark);
     while(pos!=string::npos) {
 	src.replace(pos, fml, href);
-	src.insert(pos+hl+FPOSLEN,".html");
+	src.insert(pos+hl+FPOSLEN,".html\"");
 	pos = src.find(fmark, pos+hl+FPOSLEN);
     }
 
@@ -144,9 +144,9 @@ JsonObj MobiDumper::buildToc() {
     string href = rx.get("//reference[@type='toc']/@href");
     if(href.empty()) return toc;
     //open toc file and process 'a' elements
-    Xml tocx(href);
+    Xml tocx(read(href));
     Xpath tx = tocx.xpath(NULL);
-    vector<string> links = tx.query("//a/@href");
+    vector<string> links = tx.query("//a[@href]/@href");
     for(vector<string>::iterator it = links.begin(); it != links.end(); ++it) {
 	toc.add(*it, *it);
     }

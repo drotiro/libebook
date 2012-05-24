@@ -40,10 +40,11 @@ void Dumper::write(const char * name, char * content, size_t len) {
 string Dumper::read(string name) {
     FILE * f;
     string res;
-    char buf[BUFLEN];
+    char buf[BUFLEN], fname[PATHLEN];
     size_t read;
     
-    f = fopen(name.c_str(), "rb");
+    sprintf(fname, "%s%s%s", outDir, SEP, name.c_str());
+    f = fopen(fname, "rb");
     read = fread(buf, 1, BUFLEN, f);
     while(read > 0) {
 	res.append(buf, read);
