@@ -74,7 +74,8 @@ string MobiDumper::fixLinks(string src) {
     return src;
 }
 
-#define HTML_PROLOG "<html><body>"
+#define HTML_PROLOG "<html><head><meta http-equiv=\"Content-Type\" " \
+"content=\"text/html; charset=utf-8\" /></head><body>"
 #define HTML_EPILOG "</body></html>"
 
 void MobiDumper::dumpText() {
