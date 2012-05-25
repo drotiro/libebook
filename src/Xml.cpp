@@ -48,7 +48,7 @@ std::vector<string> Xpath::query(string expr) {
 		xmlNode * cn = nodeset->nodeTab[i];
 		nsi = xmlNodeListGetString(context->doc, cn->xmlChildrenNode, 1);
 		if(!nsi) res.push_back(nodeValue(cn));
-		if(nsi) {
+		else {
 			res.push_back((char *)nsi);
 			xmlFree(nsi);
 		}
