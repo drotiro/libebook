@@ -6,6 +6,8 @@
  * License: GPL3 (see COPYING)
  */
 
+#include <libxml2/libxml/tree.h>
+
 #include "Xml.h"
 
 bool Xml::initDone = Xml::doInit();
@@ -45,11 +47,7 @@ std::vector<string> Xpath::query(string expr) {
 	    if (nodeset) for (int i=0; i < nodeset->nodeNr; i++) {
 		xmlNode * cn = nodeset->nodeTab[i];
 		nsi = xmlNodeListGetString(context->doc, cn->xmlChildrenNode, 1);
-		if(!nsi) { //try to get something
-		    while(cn->xmlChildrenNode != NULL)
-			cn = cn->xmlChildrenNode;
-		    nsi = xmlNodeListGetString(context->doc, cn, 1);
-		}
+		if(!nsi) res.push_back(nodeValue(cn));
 		if(nsi) {
 			res.push_back((char *)nsi);
 			xmlFree(nsi);
@@ -85,4 +83,13 @@ Xpath::Xpath(xmlDoc * doc, nslist * ns) {
 
 Xpath::~Xpath() {
     if(context) xmlXPathFreeContext(context);
+}
+
+string Xpath::nodeValue(xmlNode *node) {
+	if(node->xmlChildrenNode == NULL) return (char*)xmlNodeListGetString(context->doc, node, 1);
+	string res;
+	for(xmlNode* it = node->xmlChildrenNode; it != NULL; it = it->next) {
+	    res.append(nodeValue(it));
+	}
+	return res;
 }

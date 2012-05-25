@@ -30,7 +30,7 @@ public:
 
 private:
 	Xpath(xmlDoc * doc, nslist * ns);
-    
+	string nodeValue(xmlNode *node);
 	xmlXPathContext * context;
 	
 };
