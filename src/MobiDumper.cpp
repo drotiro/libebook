@@ -69,7 +69,7 @@ string MobiDumper::fixLinks(string src) {
     }
 
     // Step 3. remove mobipocket's page break
-    // (ok, it's not related to links, but fits well here)
+    // (ok, it's not related to links, but it fits well here)
     replaceAll(src, "<mbp:pagebreak/>", "");
     return src;
 }
@@ -96,7 +96,7 @@ void MobiDumper::dumpText() {
     text = fixLinks(text);
     size_t bpos = text.find("</head");
     if(bpos != string::npos) text.insert(bpos, CS_META);
-    write("text.html", fixLinks(text)+HTML_EPILOG);
+    write("text.html", text+HTML_EPILOG);
     txtFileNames.push_back("text.html");
     std::reverse(txtFileNames.begin(), txtFileNames.end());
 }
