@@ -74,8 +74,8 @@ string MobiDumper::fixLinks(string src) {
     return src;
 }
 
-#define HTML_PROLOG "<html><head><meta http-equiv=\"Content-Type\" " \
-"content=\"text/html; charset=utf-8\" /></head><body>"
+#define CS_META "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />"
+#define HTML_PROLOG "<html><head>" CS_META "</head><body>"
 #define HTML_EPILOG "</body></html>"
 
 void MobiDumper::dumpText() {
@@ -93,6 +93,9 @@ void MobiDumper::dumpText() {
 	write(fbuf, HTML_PROLOG+part+HTML_EPILOG);
     }
 
+    text = fixLinks(text);
+    size_t bpos = text.find("</head");
+    if(bpos != string::npos) text.insert(bpos, CS_META);
     write("text.html", fixLinks(text)+HTML_EPILOG);
     txtFileNames.push_back("text.html");
     std::reverse(txtFileNames.begin(), txtFileNames.end());
