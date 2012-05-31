@@ -89,7 +89,7 @@ class MobiBook : public Ebook
     bool                multibyte;
     size_t              trailersCount;
     size_t              imageFirstRec; // 0 if no images
-    size_t		coverImage;
+    int32_t		coverImage;
     unsigned int	locale;
 
     // we use bufStatic if record fits in it, bufDynamic otherwise
@@ -123,7 +123,7 @@ public:
     size_t		getTextSize() const { return doc.length(); }
     unsigned int	getLocale();
     ImageData *		getCover();
-    size_t		getCoverIndex() { return coverImage; }
+    int32_t		getCoverIndex() { return coverImage; }
     ImageData *		getImage(size_t imgRecIndex) const;
     char *		getFileName() const { return fileName; }
 
