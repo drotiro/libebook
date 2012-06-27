@@ -508,10 +508,12 @@ MobiBook::~MobiBook()
     free(firstRecData);
     free(recHeaders);
     free(bufDynamic);
-    for (size_t i = 0; i < imagesCount; i++) {
-        free(images[i].data);
+    if(images) {
+        for (size_t i = 0; i < imagesCount; i++) {
+            if(images[i].data) free(images[i].data);
+        }
+        free(images);
     }
-    free(images);
     delete huffDic;
 }
 
