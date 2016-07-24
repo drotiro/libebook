@@ -11,6 +11,9 @@ TOBJS   = bookdump.o bookinfo.o
 TOOLS	= ${TOBJS:.o=}
 SONAME  = libebook.so
 
+LIBDIR  = ../lib
+BINDIR  = ../bin
+
 # if we are on win...
 UNAME = $(shell uname -s)
 ifeq ($(findstring MINGW,$(UNAME)), MINGW)
@@ -38,11 +41,13 @@ Zip.o: Zip.cpp Zip.h
 
 # Targets
 lib: $(OBJS) $(HEADERS)
-	$(CXX) -shared -Wl,-soname,$(SONAME) -o ../lib/$(SONAME) $(OBJS) $(FLAGS) $(LIBS)
+	@mkdir -p $(LIBDIR)
+	$(CXX) -shared -Wl,-soname,$(SONAME) -o $(LIBDIR)/$(SONAME) $(OBJS) $(FLAGS) $(LIBS)
 
 tools: $(TOOLS)
 $(TOOLS): lib $(TOBJS)
-	$(CXX) -o ../bin/$@ $@.o -L../lib -lebook  $(LIBS)
+	@mkdir -p $(BINDIR)
+	$(CXX) -o $(BINDIR)/$@ $@.o -L$(LIBDIR) -lebook  $(LIBS)
 
 .cpp.o:
 	g++ $(FLAGS) -c $< -o $@
